@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Motion Catalog — Portfolio Animation Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #131313;
+    --surface-2: #181818;
+    --text: #f5f5f5;
+    --muted: #888;
+    --muted-2: #555;
+    --stroke: #1f1f1f;
+    --stroke-2: #2a2a2a;
+    --accent-a: #89AACC;
+    --accent-b: #4E85BF;
+    --accent: linear-gradient(90deg, #89AACC 0%, #4E85BF 100%);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.5;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 80px 24px 120px;
+  }
+
+  /* ===== Header ===== */
+  .header { padding-bottom: 64px; margin-bottom: 64px; border-bottom: 1px solid var(--stroke); }
+  .eyebrow {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.3em;
+    color: var(--muted); margin-bottom: 24px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .eyebrow::before { content: ''; width: 32px; height: 1px; background: var(--muted-2); }
+  .title {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: clamp(48px, 8vw, 96px); line-height: 0.95;
+    letter-spacing: -0.02em; margin-bottom: 24px;
+  }
+  .title .accent {
+    background: var(--accent); -webkit-background-clip: text;
+    background-clip: text; color: transparent;
+  }
+  .subtitle { font-size: 15px; color: var(--muted); max-width: 580px; }
+  .nav-pills {
+    margin-top: 32px; display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .nav-pill {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.15em;
+    padding: 7px 14px; border-radius: 999px; border: 1px solid var(--stroke);
+    color: var(--muted); text-decoration: none; transition: all 0.2s;
+    background: var(--surface);
+  }
+  .nav-pill:hover { color: var(--text); border-color: var(--stroke-2); }
+  .nav-pill .count { color: var(--muted-2); margin-left: 6px; font-variant-numeric: tabular-nums; }
+
+  /* ===== Section ===== */
+  .section { margin-bottom: 72px; scroll-margin-top: 40px; }
+  .section-header {
+    margin-bottom: 28px; display: flex; align-items: baseline;
+    gap: 16px; justify-content: space-between; flex-wrap: wrap;
+  }
+  .section-title {
+    font-family: 'Instrument Serif', serif; font-style: italic; font-size: 30px;
+  }
+  .section-title small {
+    display: inline-block; margin-left: 12px;
+    font-family: 'Inter', sans-serif; font-style: normal; font-size: 11px;
+    color: var(--muted); text-transform: uppercase; letter-spacing: 0.25em;
+    font-weight: 400; vertical-align: middle;
+  }
+  .section-count {
+    font-size: 11px; color: var(--muted); letter-spacing: 0.2em;
+    text-transform: uppercase; font-variant-numeric: tabular-nums;
+  }
+
+  /* ===== Grid + Card ===== */
+  .grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+  @media (min-width: 720px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--stroke);
+    border-radius: 20px; overflow: hidden; transition: border-color 0.4s;
+    display: flex; flex-direction: column;
+  }
+  .card:hover { border-color: var(--stroke-2); }
+
+  .demo {
+    aspect-ratio: 16 / 11; background: var(--bg);
+    border-bottom: 1px solid var(--stroke); position: relative;
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
+  }
+  .card-meta { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .card-tag {
+    font-size: 10px; color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.25em; display: flex; align-items: center; gap: 8px;
+  }
+  .card-tag .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--accent-a); }
+  .card-name {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 22px; line-height: 1.1; margin-bottom: 6px;
+  }
+  .prompt {
+    background: var(--bg); border: 1px solid var(--stroke);
+    border-radius: 10px; padding: 12px 14px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11.5px;
+    color: var(--muted); line-height: 1.65; margin-top: auto;
+  }
+  .prompt-label {
+    color: var(--muted-2); text-transform: uppercase;
+    letter-spacing: 0.22em; font-size: 9px; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .prompt-label::before {
+    content: ''; width: 4px; height: 4px; border-radius: 50%;
+    background: var(--accent-a);
+  }
+  .prompt code { color: var(--text); font-weight: 500; }
+
+  .replay {
+    position: absolute; bottom: 12px; right: 12px;
+    background: rgba(0,0,0,0.5); backdrop-filter: blur(8px);
+    border: 1px solid var(--stroke-2); color: var(--muted);
+    font-size: 10px; text-transform: uppercase; letter-spacing: 0.15em;
+    padding: 7px 12px; border-radius: 999px; cursor: pointer;
+    z-index: 10; transition: all 0.2s; font-family: inherit;
+  }
+  .replay:hover { color: var(--text); border-color: var(--accent-a); }
+  .replay::before { content: '↻'; margin-right: 6px; }
+
+  /* ============================================================
+     INDIVIDUAL ANIMATIONS
+     ============================================================ */
+
+  /* 01 — Loading counter */
+  .anim-counter {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 84px; font-variant-numeric: tabular-nums; line-height: 1;
+  }
+  .anim-progress {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 2px; background: rgba(255,255,255,0.05);
+  }
+  .anim-progress-bar {
+    height: 100%; background: var(--accent); transform-origin: left;
+    transform: scaleX(0); box-shadow: 0 0 8px rgba(137,170,204,0.5);
+  }
+
+  /* 02 — Word rotation */
+  .anim-words {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 56px; position: relative; height: 70px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .anim-words span {
+    position: absolute; opacity: 0; animation: word-cycle 4.5s infinite;
+  }
+  .anim-words span:nth-child(1) { animation-delay: 0s; }
+  .anim-words span:nth-child(2) { animation-delay: 1.5s; }
+  .anim-words span:nth-child(3) { animation-delay: 3s; }
+  @keyframes word-cycle {
+    0%   { opacity: 0; transform: translateY(20px); }
+    7%, 28%  { opacity: 1; transform: translateY(0); }
+    35%, 100% { opacity: 0; transform: translateY(-20px); }
+  }
+
+  /* 03 — Name reveal */
+  .anim-name {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 56px; letter-spacing: -0.02em; line-height: 1;
+    opacity: 0; transform: translateY(50px);
+  }
+  .anim-name.play { animation: name-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  @keyframes name-reveal { to { opacity: 1; transform: translateY(0); } }
+
+  /* 04 — Blur-in stagger */
+  .anim-blur-wrap { display: flex; flex-direction: column; gap: 8px; align-items: center; padding: 0 20px; }
+  .anim-blur-line { opacity: 0; transform: translateY(20px); filter: blur(10px); }
+  .anim-blur-line:nth-child(1) { font-size: 10px; text-transform: uppercase; letter-spacing: 0.3em; color: var(--muted); }
+  .anim-blur-line:nth-child(2) { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 32px; }
+  .anim-blur-line:nth-child(3) { font-size: 12px; color: var(--muted); text-align: center; max-width: 260px; }
+  .anim-blur-wrap.play .anim-blur-line { animation: blur-in 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .anim-blur-wrap.play .anim-blur-line:nth-child(1) { animation-delay: 0s; }
+  .anim-blur-wrap.play .anim-blur-line:nth-child(2) { animation-delay: 0.1s; }
+  .anim-blur-wrap.play .anim-blur-line:nth-child(3) { animation-delay: 0.2s; }
+  @keyframes blur-in { to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+
+  /* 05 — Section reveal (IntersectionObserver) */
+  .anim-reveal {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 38px; opacity: 0; transform: translateY(30px);
+  }
+  .anim-reveal.play { animation: reveal-up 1s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; }
+  @keyframes reveal-up { to { opacity: 1; transform: translateY(0); } }
+
+  /* 06 — Scroll indicator */
+  .anim-scroll-wrap { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .anim-scroll-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.3em; color: var(--muted); }
+  .anim-scroll-line { width: 1px; height: 68px; background: var(--stroke-2); position: relative; overflow: hidden; }
+  .anim-scroll-line::after {
+    content: ''; position: absolute; top: 0; left: 0;
+    width: 100%; height: 50%;
+    background: linear-gradient(to bottom, transparent, var(--text));
+    animation: scroll-down 1.5s ease-in-out infinite;
+  }
+  @keyframes scroll-down {
+    0%   { transform: translateY(-100%); }
+    100% { transform: translateY(200%); }
+  }
+
+  /* 07 — Marquee */
+  .anim-marquee {
+    width: 100%; overflow: hidden; position: relative;
+    display: flex; align-items: center;
+  }
+  .anim-marquee-track {
+    display: flex; gap: 32px; white-space: nowrap;
+    animation: marquee 18s linear infinite;
+    font-family: 'Instrument Serif', serif; font-style: italic; font-size: 32px;
+  }
+  .anim-marquee-track span { display: inline-block; }
+  .anim-marquee-track span::after {
+    content: '•'; color: var(--accent-a); margin-left: 32px;
+  }
+  @keyframes marquee { to { transform: translateX(-50%); } }
+
+  /* 08 — Animated gradient border */
+  .anim-gradient-btn {
+    position: relative; padding: 14px 28px;
+    background: var(--bg); color: var(--text);
+    border-radius: 999px; font-size: 13px; font-weight: 400;
+    border: none; cursor: pointer; font-family: inherit;
+    z-index: 1;
+  }
+  .anim-gradient-btn::before {
+    content: ''; position: absolute; inset: -2px; border-radius: 999px;
+    background: linear-gradient(90deg, #89AACC, #4E85BF, #89AACC, #4E85BF, #89AACC);
+    background-size: 300% 100%;
+    animation: gradient-shift 4s linear infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+    padding: 2px; z-index: -1;
+  }
+  @keyframes gradient-shift {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+
+  /* 09 — Pulsing dot */
+  .anim-dot-wrap {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px; color: var(--muted);
+  }
+  .anim-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; position: relative; }
+  .anim-dot::after {
+    content: ''; position: absolute; inset: 0;
+    background: #4ade80; border-radius: 50%;
+    animation: dot-pulse 2s ease-out infinite;
+  }
+  @keyframes dot-pulse {
+    0%   { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(3); opacity: 0; }
+  }
+
+  /* 10 — Role word swap */
+  .anim-role-wrap {
+    font-size: 17px; color: var(--muted); text-align: center;
+  }
+  .anim-role-wrap .role {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    color: var(--text); font-size: 22px; display: inline-block; min-width: 100px;
+  }
+  .anim-role-wrap .role.swap { animation: role-in 0.4s ease-out; }
+  @keyframes role-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 11 — Parallax columns */
+  .anim-parallax {
+    position: absolute; inset: 0; overflow: hidden;
+    display: flex; justify-content: center; align-items: center; gap: 24px;
+    padding: 0 16px;
+  }
+  .anim-parallax-col {
+    width: 80px; height: 100%; position: relative;
+    -webkit-mask: linear-gradient(to bottom, transparent, #000 20%, #000 80%, transparent);
+    mask: linear-gradient(to bottom, transparent, #000 20%, #000 80%, transparent);
+  }
+  .anim-parallax-track {
+    display: flex; flex-direction: column; gap: 12px;
+    position: absolute; top: 0; left: 0; right: 0;
+  }
+  .anim-parallax-col:nth-child(1) .anim-parallax-track { animation: parallax-up 12s linear infinite; }
+  .anim-parallax-col:nth-child(2) .anim-parallax-track { animation: parallax-up 18s linear infinite reverse; }
+  .anim-parallax-card {
+    aspect-ratio: 4/5; border-radius: 8px; flex-shrink: 0;
+    border: 1px solid var(--stroke);
+  }
+  .anim-parallax-card.c1 { background: linear-gradient(135deg, #2a3b4d, #4e85bf); }
+  .anim-parallax-card.c2 { background: linear-gradient(135deg, #1e2a3a, #89aacc); }
+  .anim-parallax-card.c3 { background: linear-gradient(135deg, #3a4d5f, #4e85bf); }
+  .anim-parallax-card.c4 { background: linear-gradient(135deg, #243340, #6a95c4); }
+  @keyframes parallax-up {
+    from { transform: translateY(0); }
+    to   { transform: translateY(-50%); }
+  }
+  .anim-parallax-overlay {
+    position: relative; z-index: 2;
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 26px; text-align: center;
+    background: rgba(10,10,10,0.4); padding: 8px 16px;
+    backdrop-filter: blur(4px); border-radius: 8px;
+    border: 1px solid var(--stroke);
+  }
+
+  /* 12 — Hover gradient ring button */
+  .anim-hover-btn {
+    position: relative; padding: 14px 28px;
+    background: var(--bg); color: var(--text);
+    border: 2px solid var(--stroke-2); border-radius: 999px;
+    font-size: 13px; cursor: pointer; font-family: inherit;
+    transition: transform 0.3s, border-color 0.3s;
+    z-index: 1;
+  }
+  .anim-hover-btn:hover {
+    transform: scale(1.05); border-color: transparent;
+  }
+  .anim-hover-btn::before {
+    content: ''; position: absolute; inset: -2px; border-radius: 999px;
+    background: var(--accent); opacity: 0;
+    transition: opacity 0.3s; z-index: -1; padding: 2px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude;
+  }
+  .anim-hover-btn:hover::before { opacity: 1; }
+  .anim-hover-arrow {
+    display: inline-block; margin-left: 4px;
+    transition: transform 0.3s;
+  }
+  .anim-hover-btn:hover .anim-hover-arrow { transform: translate(2px, -2px); }
+
+  /* 13 — Image card hover */
+  .anim-image-card {
+    width: 76%; aspect-ratio: 4/3; border-radius: 16px;
+    overflow: hidden; position: relative; cursor: pointer;
+    border: 1px solid var(--stroke);
+  }
+  .anim-image-card-bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #2a3b4d 0%, #4e85bf 50%, #89aacc 100%);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .anim-image-card-bg::after {
+    content: ''; position: absolute; inset: 0;
+    background-image: radial-gradient(circle, #000 1px, transparent 1px);
+    background-size: 4px 4px; opacity: 0.2; mix-blend-mode: multiply;
+  }
+  .anim-image-card:hover .anim-image-card-bg { transform: scale(1.06); }
+  .anim-image-overlay {
+    position: absolute; inset: 0;
+    background: rgba(10, 10, 10, 0.7); backdrop-filter: blur(8px);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .anim-image-card:hover .anim-image-overlay { opacity: 1; }
+  .anim-image-pill {
+    position: relative; padding: 8px 16px;
+    background: var(--text); color: var(--bg);
+    border-radius: 999px; font-size: 11px;
+  }
+  .anim-image-pill em {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 13px;
+  }
+
+  /* 14 — Logo gradient ring */
+  .anim-logo {
+    width: 60px; height: 60px; border-radius: 50%;
+    position: relative; cursor: pointer;
+    transition: transform 0.3s;
+  }
+  .anim-logo:hover { transform: scale(1.1); }
+  .anim-logo::before {
+    content: ''; position: absolute; inset: 0; border-radius: 50%;
+    background: conic-gradient(from 0deg, #89AACC, #4E85BF, #89AACC, #4E85BF, #89AACC);
+    animation: logo-spin 4s linear infinite;
+  }
+  .anim-logo:hover::before { animation-direction: reverse; }
+  .anim-logo::after {
+    content: 'LI'; position: absolute; inset: 3px;
+    background: var(--bg); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-size: 18px; color: var(--text); z-index: 1;
+  }
+  @keyframes logo-spin { to { transform: rotate(360deg); } }
+
+  /* ===== Footer ===== */
+  .footer {
+    margin-top: 96px; padding-top: 40px;
+    border-top: 1px solid var(--stroke);
+    color: var(--muted); font-size: 12px;
+    display: flex; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .footer .footer-meta { display: flex; align-items: center; gap: 16px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="eyebrow">Animation Reference · 26'</div>
+    <h1 class="title">Motion <span class="accent">catalog</span></h1>
+    <p class="subtitle">Every animation from the portfolio spec, isolated. Live demo on the left, the prompt you'd paste to recreate it on the right. One-shots have a replay button.</p>
+    <div class="nav-pills">
+      <a href="#entrance" class="nav-pill">Entrance<span class="count">05</span></a>
+      <a href="#ambient" class="nav-pill">Ambient<span class="count">04</span></a>
+      <a href="#cycles" class="nav-pill">Cycles<span class="count">01</span></a>
+      <a href="#scroll" class="nav-pill">Scroll<span class="count">01</span></a>
+      <a href="#hover" class="nav-pill">Hover<span class="count">03</span></a>
+    </div>
+  </header>
+
+  <!-- ENTRANCE -->
+  <section class="section" id="entrance">
+    <div class="section-header">
+      <h2 class="section-title">Entrance<small>— first impressions</small></h2>
+      <span class="section-count">01 / 05</span>
+    </div>
+    <div class="grid">
+
+      <!-- 01 Loading counter -->
+      <article class="card">
+        <div class="demo">
+          <div class="anim-counter" id="counter">000</div>
+          <div class="anim-progress"><div class="anim-progress-bar" id="counterBar"></div></div>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>One-shot · 2.7s</div>
+          <h3 class="card-name">Loading counter</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            Counter ticking <code>000→100</code> over 2.7s with <code>requestAnimationFrame</code>. Display in <code>tabular-nums</code>, padded with <code>padStart(3, '0')</code>. A 2px progress bar beneath uses <code>scaleX(count/100)</code> filled with a linear gradient (<code>#89AACC→#4E85BF</code>) and an 8px soft glow.
+          </div>
+        </div>
+      </article>
+
+      <!-- 02 Word rotation -->
+      <article class="card">
+        <div class="demo">
+          <div class="anim-words">
+            <span>Lorem</span>
+            <span>Ipsum</span>
+            <span>Dolor</span>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>Cycle · 1.5s per word</div>
+          <h3 class="card-name">Word rotation</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            Array of words cycling every 900ms. Use Framer Motion <code>AnimatePresence mode="wait"</code>. Each word enters from <code>translateY(20px)</code>, exits to <code>translateY(-20px)</code>, with opacity tween. Instrument Serif italic, large display size.
+          </div>
+        </div>
+      </article>
+
+      <!-- 03 Name reveal -->
+      <article class="card">
+        <div class="demo">
+          <div class="anim-name play" id="nameReveal">Lorem Ipsum</div>
+          <button class="replay" data-target="nameReveal">Replay</button>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>One-shot · 1.2s</div>
+          <h3 class="card-name">Name reveal</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            GSAP timeline on mount: <code>opacity 0→1</code>, <code>translateY(50px→0)</code>, <code>duration 1.2s</code>, ease <code>power3.out</code>. Display headline in italic serif at the hero center.
+          </div>
+        </div>
+      </article>
+
+      <!-- 04 Blur-in stagger -->
+      <article class="card">
+        <div class="demo">
+          <div class="anim-blur-wrap play" id="blurStagger">
+            <div class="anim-blur-line">Lorem '26</div>
+            <div class="anim-blur-line">Ipsum dolor sit amet</div>
+            <div class="anim-blur-line">Consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore.</div>
+          </div>
+          <button class="replay" data-target="blurStagger">Replay</button>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>Stagger · 0.1s offset</div>
+          <h3 class="card-name">Blur-in stagger</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            Multiple lines reveal with <code>opacity 0→1</code>, <code>translateY(20px→0)</code>, <code>filter: blur(10px)→blur(0)</code>. Duration 1s, ease <code>power3.out</code>, stagger 0.1s between siblings. Run after the headline lands.
+          </div>
+        </div>
+      </article>
+
+      <!-- 05 Section reveal -->
+      <article class="card">
+        <div class="demo">
+          <div class="anim-reveal" id="sectionReveal">Lorem ipsum dolor</div>
+          <button class="replay" data-target="sectionReveal">Replay</button>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>On-scroll · fires once</div>
+          <h3 class="card-name">Section reveal</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            Framer Motion <code>whileInView</code>: <code>opacity 0→1</code>, <code>y 30→0</code>, duration 1s, ease <code>cubic-bezier(0.25, 0.1, 0.25, 1)</code>. Triggers once with viewport margin <code>"-100px"</code>.
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- AMBIENT -->
+  <section class="section" id="ambient">
+    <div class="section-header">
+      <h2 class="section-title">Ambient loops<small>— always running</small></h2>
+      <span class="section-count">02 / 05</span>
+    </div>
+    <div class="grid">
+
+      <!-- 06 Scroll indicator -->
+      <article class="card">
+        <div class="demo">
+          <div class="anim-scroll-wrap">
+            <div class="anim-scroll-label">Scroll</div>
+            <div class="anim-scroll-line"></div>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>Loop · 1.5s ease-in-out</div>
+          <h3 class="card-name">Scroll indicator</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            Vertical 1px line, ~60px tall. Inside it, a half-height gradient (<code>transparent→white</code>) translates from <code>translateY(-100%)</code> to <code>translateY(200%)</code> on a 1.5s ease-in-out infinite loop. Sits at the bottom of the hero.
+          </div>
+        </div>
+      </article>
+
+      <!-- 07 Marquee -->
+      <article class="card">
+        <div class="demo" style="padding: 0;">
+          <div class="anim-marquee">
+            <div class="anim-marquee-track">
+              <span>Lorem ipsum dolor</span>
+              <span>Lorem ipsum dolor</span>
+              <span>Lorem ipsum dolor</span>
+              <span>Lorem ipsum dolor</span>
+              <span>Lorem ipsum dolor</span>
+              <span>Lorem ipsum dolor</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>Loop · 40s linear</div>
+          <h3 class="card-name">Infinite marquee</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            GSAP infinite x-translate. <code>xPercent: -50</code>, <code>duration: 40</code>, <code>ease: "none"</code>, <code>repeat: -1</code>. Repeat the text 8–10× so the loop stays seamless. Lives in the footer overlaying a flipped background video.
+          </div>
+        </div>
+      </article>
+
+      <!-- 08 Gradient border shift -->
+      <article class="card">
+        <div class="demo">
+          <button class="anim-gradient-btn">Lorem ipsum <span style="margin-left:4px;">↗</span></button>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>Loop · 4s linear</div>
+          <h3 class="card-name">Animated gradient border</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            Element with a pseudo-element padding-mask: 2px ring filled with a 300%-wide repeating gradient that animates <code>background-position</code> from 0% to 300% over 4s linear infinite. Uses <code>mask-composite: exclude</code> to cut the center.
+          </div>
+        </div>
+      </article>
+
+      <!-- 09 Pulsing dot -->
+      <article class="card">
+        <div class="demo">
+          <div class="anim-dot-wrap">
+            <div class="anim-dot"></div>
+            <span>Lorem ipsum dolor sit</span>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>Loop · 2s ease-out</div>
+          <h3 class="card-name">Pulsing availability dot</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            Solid 8px green dot. A pseudo-element clone underneath scales <code>1→3</code> while opacity fades <code>0.8→0</code> on a 2s ease-out infinite loop. Reads as a soft heartbeat ring.
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- CYCLES -->
+  <section class="section" id="cycles">
+    <div class="section-header">
+      <h2 class="section-title">State cycles<small>— interval-driven swaps</small></h2>
+      <span class="section-count">03 / 05</span>
+    </div>
+    <div class="grid">
+
+      <!-- 10 Role word swap -->
+      <article class="card">
+        <div class="demo">
+          <div class="anim-role-wrap">
+            Lorem <span class="role swap" id="roleWord">ipsum</span> dolor sit amet.
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>Cycle · 2s interval</div>
+          <h3 class="card-name">Role word swap</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            Array of role words cycles every 2s via <code>setInterval</code>. Visible word uses a React <code>key</code> prop to force remount, replaying a 0.4s ease-out CSS keyframe: <code>opacity 0→1</code>, <code>translateY(8px→0)</code>.
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- SCROLL -->
+  <section class="section" id="scroll">
+    <div class="section-header">
+      <h2 class="section-title">Scroll-driven<small>— parallax + pin</small></h2>
+      <span class="section-count">04 / 05</span>
+    </div>
+    <div class="grid">
+
+      <!-- 11 Parallax columns -->
+      <article class="card">
+        <div class="demo">
+          <div class="anim-parallax">
+            <div class="anim-parallax-col">
+              <div class="anim-parallax-track">
+                <div class="anim-parallax-card c1"></div>
+                <div class="anim-parallax-card c2"></div>
+                <div class="anim-parallax-card c3"></div>
+                <div class="anim-parallax-card c4"></div>
+                <div class="anim-parallax-card c1"></div>
+                <div class="anim-parallax-card c2"></div>
+                <div class="anim-parallax-card c3"></div>
+                <div class="anim-parallax-card c4"></div>
+              </div>
+            </div>
+            <div class="anim-parallax-overlay">Lorem<br>ipsum</div>
+            <div class="anim-parallax-col">
+              <div class="anim-parallax-track">
+                <div class="anim-parallax-card c3"></div>
+                <div class="anim-parallax-card c1"></div>
+                <div class="anim-parallax-card c4"></div>
+                <div class="anim-parallax-card c2"></div>
+                <div class="anim-parallax-card c3"></div>
+                <div class="anim-parallax-card c1"></div>
+                <div class="anim-parallax-card c4"></div>
+                <div class="anim-parallax-card c2"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>Scroll-driven · pinned</div>
+          <h3 class="card-name">Parallax columns</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            300vh section. GSAP <code>ScrollTrigger.create({ pin: contentRef, pinSpacing: false })</code> locks the center heading. Two flanking image columns animate <code>y</code> at different rates with <code>scrub</code>, passing each other inversely as the user scrolls.
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- HOVER -->
+  <section class="section" id="hover">
+    <div class="section-header">
+      <h2 class="section-title">Hover interactions<small>— micro-payoffs</small></h2>
+      <span class="section-count">05 / 05</span>
+    </div>
+    <div class="grid">
+
+      <!-- 12 Hover gradient ring button -->
+      <article class="card">
+        <div class="demo">
+          <button class="anim-hover-btn">Lorem ipsum <span class="anim-hover-arrow">↗</span></button>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>Hover me · 0.3s</div>
+          <h3 class="card-name">Gradient ring on hover</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            Outline button with a hidden pseudo-element gradient ring. On hover: ring <code>opacity 0→1</code>, button <code>transform: scale(1.05)</code>, border-color fades to transparent. Transition 0.3s ease. Arrow nudges diagonally on hover.
+          </div>
+        </div>
+      </article>
+
+      <!-- 13 Image card hover -->
+      <article class="card">
+        <div class="demo">
+          <div class="anim-image-card">
+            <div class="anim-image-card-bg"></div>
+            <div class="anim-image-overlay">
+              <div class="anim-image-pill">View — <em>Lorem Ipsum</em></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>Hover me · 0.4–0.6s</div>
+          <h3 class="card-name">Image card reveal</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            On hover: background image <code>scale 1→1.05</code> over 0.6s. A dark <code>bg-black/70</code> overlay with <code>backdrop-blur</code> fades in <code>0→1</code> over 0.4s. A white pill label inside the overlay carries an animated gradient border.
+          </div>
+        </div>
+      </article>
+
+      <!-- 14 Logo gradient ring -->
+      <article class="card">
+        <div class="demo">
+          <div class="anim-logo"></div>
+        </div>
+        <div class="card-meta">
+          <div class="card-tag"><span class="dot"></span>Hover me · direction flip</div>
+          <h3 class="card-name">Rotating logo ring</h3>
+          <div class="prompt">
+            <div class="prompt-label">Prompt</div>
+            56–60px circle. <code>::before</code> pseudo-element is a <code>conic-gradient</code> ring rotating 360° on a 4s linear infinite loop. <code>::after</code> is the static inner disc with initials. On hover, <code>animation-direction</code> flips to <code>reverse</code> and the whole element scales to 1.1.
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div>14 animations · CSS + minimal JS · single file</div>
+    <div class="footer-meta">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <div class="anim-dot" style="width:6px; height:6px;"></div>
+        <span>Live</span>
+      </div>
+      <span>Motion catalog · 2026</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  /* ===== Loading counter — auto-loop ===== */
+  (function () {
+    const display = document.getElementById('counter');
+    const bar = document.getElementById('counterBar');
+    if (!display) return;
+    const DURATION = 2700;
+    const PAUSE = 1200;
+    function run() {
+      const start = performance.now();
+      function tick(now) {
+        const t = Math.min((now - start) / DURATION, 1);
+        const value = Math.floor(t * 100);
+        display.textContent = String(value).padStart(3, '0');
+        bar.style.transform = 'scaleX(' + t + ')';
+        if (t < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          setTimeout(() => {
+            display.textContent = '000';
+            bar.style.transform = 'scaleX(0)';
+            setTimeout(run, 200);
+          }, PAUSE);
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+    run();
+  })();
+
+  /* ===== Role word swap — every 2s ===== */
+  (function () {
+    const el = document.getElementById('roleWord');
+    if (!el) return;
+    const roles = ['ipsum', 'dolor', 'amet', 'elit'];
+    let i = 0;
+    setInterval(() => {
+      i = (i + 1) % roles.length;
+      el.classList.remove('swap');
+      // force reflow to restart animation
+      void el.offsetWidth;
+      el.textContent = roles[i];
+      el.classList.add('swap');
+    }, 2000);
+  })();
+
+  /* ===== Replay buttons ===== */
+  document.querySelectorAll('.replay').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = document.getElementById(btn.dataset.target);
+      if (!target) return;
+      target.classList.remove('play');
+      void target.offsetWidth;
+      target.classList.add('play');
+    });
+  });
+
+  /* ===== Section reveal — IntersectionObserver demo ===== */
+  (function () {
+    const el = document.getElementById('sectionReveal');
+    if (!el || !('IntersectionObserver' in window)) return;
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          el.classList.remove('play');
+          void el.offsetWidth;
+          el.classList.add('play');
+        }
+      });
+    }, { threshold: 0.5 });
+    io.observe(el);
+  })();
+</script>
+</body>
+</html>

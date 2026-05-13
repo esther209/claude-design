@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Northview Apartments — Elevated Living. Everyday Comfort.</title>
+<meta name="description" content="Modern apartments designed for the way you live. Stylish spaces, premium amenities, and a location that connects you to it all.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0e1418;
+    --on-dark:#f5efe6;
+    --on-dark-soft:rgba(245,239,230,.72);
+    --on-dark-faint:rgba(245,239,230,.42);
+    --hairline:rgba(245,239,230,.22);
+    --accent:#d8b48a; /* warm window-light gold */
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Inter',-apple-system,system-ui,sans-serif;
+    color:var(--on-dark);
+    background:#06090b;
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .serif{font-family:'Fraunces',Georgia,serif;font-weight:300;letter-spacing:-.02em;font-variation-settings:'opsz' 144}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:500;font-size:11px;letter-spacing:.22em;text-transform:uppercase}
+
+  /* ============ STAGE ============ */
+  .stage{
+    position:relative;width:100%;height:100vh;min-height:560px;
+    overflow:hidden;isolation:isolate;
+  }
+
+  /* ---- video layer ---- */
+  .bg{
+    position:absolute;inset:0;width:100%;height:100%;z-index:0;
+    background:#06090b;
+  }
+  .bg video,.bg .poster{
+    position:absolute;inset:0;width:100%;height:100%;
+    object-fit:cover;object-position:center 40%;
+    will-change:transform,opacity;
+  }
+  .bg .poster{
+    background:
+      radial-gradient(120% 80% at 75% 60%, #1a2230 0%, #0a0d12 60%, #06090b 100%);
+    opacity:1;transition:opacity .9s ease;
+  }
+  .bg.is-ready .poster{opacity:0}
+  .bg video{
+    opacity:0;transition:opacity 1.2s ease;
+    transform:scale(1.06); /* very slow ken-burns */
+    animation:slowZoom 38s ease-in-out 1.2s infinite alternate;
+  }
+  .bg.is-ready video{opacity:1}
+  @keyframes slowZoom{
+    0%   {transform:scale(1.06) translate3d(0,0,0)}
+    100% {transform:scale(1.14) translate3d(-1.2%,-.6%,0)}
+  }
+
+  /* ---- atmosphere overlays (depth + legibility) ---- */
+  .veil{position:absolute;inset:0;z-index:1;pointer-events:none}
+  .veil.left{
+    background:linear-gradient(90deg,
+      rgba(6,9,11,.85) 0%,
+      rgba(6,9,11,.62) 22%,
+      rgba(6,9,11,.30) 42%,
+      rgba(6,9,11,.05) 62%,
+      rgba(6,9,11,0) 80%);
+  }
+  .veil.bottom{
+    background:linear-gradient(180deg,
+      rgba(6,9,11,0) 30%,
+      rgba(6,9,11,.55) 65%,
+      rgba(6,9,11,.55) 85%,
+      rgba(6,9,11,.85) 100%);
+  }
+  .veil.top{
+    background:linear-gradient(180deg,
+      rgba(6,9,11,.55) 0%,
+      rgba(6,9,11,.18) 35%,
+      rgba(6,9,11,0) 60%);
+  }
+  .grain{
+    position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.06;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* ============ FOREGROUND ============ */
+  .frame{
+    position:relative;z-index:5;height:100%;
+    display:flex;flex-direction:column;
+    padding:34px clamp(28px,5vw,72px) 34px;
+    gap:clamp(18px,3vh,40px);
+  }
+
+  /* nav */
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:24px}
+  .brand{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--on-dark)}
+  .brand:visited,.brand:hover,.brand:active{color:var(--on-dark);text-decoration:none}
+  .brand-mark{
+    width:30px;height:38px;display:block;color:var(--on-dark);flex:none;
+  }
+  .brand-mark svg{width:100%;height:100%;display:block;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:square}
+  .brand-text{display:flex;flex-direction:column;line-height:1}
+  .brand-name{font-family:'Fraunces',Georgia,serif;font-weight:400;font-size:23px;letter-spacing:.18em}
+  .brand-sub{font-family:'Inter',sans-serif;font-size:11px;letter-spacing:.36em;color:var(--on-dark-soft);margin-top:6px}
+
+  .nav-links{display:flex;gap:38px}
+  .nav-links a{
+    font-family:'Inter',sans-serif;font-size:13px;letter-spacing:.22em;text-transform:uppercase;
+    font-weight:500;color:var(--on-dark);text-decoration:none;position:relative;padding:6px 0;
+    transition:color .25s ease;
+  }
+  .nav-links a::after{
+    content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
+    background:var(--on-dark);transform:scaleX(0);transform-origin:left;
+    transition:transform .35s cubic-bezier(.22,.61,.36,1);
+  }
+  .nav-links a:hover::after{transform:scaleX(1)}
+
+  .cta-tour{
+    font-family:'Inter',sans-serif;font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;
+    color:var(--on-dark);border:1px solid var(--on-dark);padding:16px 24px;border-radius:1px;
+    background:transparent;cursor:pointer;text-decoration:none;
+    transition:background .3s ease,color .3s ease;
+  }
+  .cta-tour:hover{background:var(--on-dark);color:#0e1418}
+
+  /* hero block */
+  .hero{
+    flex:1;display:flex;flex-direction:column;justify-content:center;
+    max-width:760px;
+  }
+  .eye{
+    display:inline-flex;align-items:center;gap:20px;color:var(--on-dark);
+    margin-bottom:38px;
+    font-size:17px;letter-spacing:.32em;
+  }
+  .eye-line{width:64px;height:1px;background:var(--accent);opacity:.9}
+
+  h1.headline{
+    font-family:'Fraunces',Georgia,serif;font-weight:300;
+    font-variation-settings:'opsz' 144;
+    font-size:clamp(54px,7vw,108px);
+    line-height:.96;letter-spacing:-.025em;
+    color:var(--on-dark);
+    text-wrap:balance;
+  }
+  h1.headline .em{font-style:italic;font-weight:300;color:#efe1cb}
+  h1.headline .word{display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 .04em .14em;margin:0 -.04em -.14em}
+  h1.headline .word > span{display:inline-block;transform:translateY(110%);opacity:0;animation:rise 1.05s cubic-bezier(.22,.61,.36,1) forwards}
+
+  .lede{
+    margin-top:36px;max-width:46ch;
+    font-size:21px;line-height:1.6;color:var(--on-dark);font-weight:400;
+    opacity:0;transform:translateY(14px);
+    animation:fadeUp 1s ease .9s forwards;
+  }
+
+  .ctas{
+    margin-top:42px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;
+    opacity:0;transform:translateY(14px);
+    animation:fadeUp 1s ease 1.05s forwards;
+  }
+  .btn{
+    font-family:'Inter',sans-serif;font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;
+    padding:20px 32px;border-radius:1px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:14px;
+    transition:transform .3s ease,background .3s ease,color .3s ease,border-color .3s ease;
+    border:1px solid transparent;
+  }
+  .btn-primary{background:var(--on-dark);color:#0e1418;border-color:var(--on-dark)}
+  .btn-primary:hover{background:transparent;color:var(--on-dark);transform:translateY(-1px)}
+  .btn-ghost{background:transparent;color:var(--on-dark);border-color:var(--hairline)}
+  .btn-ghost:hover{border-color:var(--on-dark);transform:translateY(-1px)}
+  .btn-ghost .play{
+    width:22px;height:22px;border-radius:50%;border:1px solid currentColor;
+    display:inline-flex;align-items:center;justify-content:center;
+  }
+  .btn-ghost .play::before{
+    content:"";display:block;border-style:solid;border-width:4px 0 4px 6px;
+    border-color:transparent transparent transparent currentColor;margin-left:2px;
+  }
+
+  /* footer row */
+  .meta{
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    padding-top:22px;border-top:1px solid var(--hairline);
+    opacity:0;transform:translateY(10px);
+    animation:fadeUp 1s ease 1.3s forwards;
+  }
+  .features{display:flex;gap:48px;flex-wrap:wrap}
+  .feat{display:flex;align-items:center;gap:14px}
+  .feat-ico{
+    width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;
+    color:var(--on-dark);
+  }
+  .feat-ico svg{width:100%;height:100%;stroke:currentColor;fill:none;stroke-width:1.25}
+  .feat-text{display:flex;flex-direction:column;line-height:1.15}
+  .feat-label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--on-dark)}
+  .feat-sub{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--on-dark-soft);margin-top:5px}
+
+  .scroll-cue{
+    display:flex;align-items:center;gap:12px;color:var(--on-dark);
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.3em;text-transform:uppercase;
+  }
+  .scroll-cue::before{
+    content:"";width:1px;height:34px;background:var(--on-dark-faint);
+    animation:scrollPulse 2.4s ease-in-out infinite;transform-origin:top;
+  }
+  @keyframes scrollPulse{
+    0%,100%{transform:scaleY(.3);opacity:.3}
+    50%{transform:scaleY(1);opacity:1}
+  }
+
+  /* ===== AD LAYOUT ===== */
+  .ad-frame{justify-content:space-between}
+  .ad-frame.ad-frame-centered{justify-content:flex-start}
+  .ad-head{display:flex;align-items:center;justify-content:space-between;gap:24px}
+  .ad-tag{
+    display:inline-flex;align-items:center;gap:12px;
+    color:var(--on-dark);font-size:12px;letter-spacing:.32em;
+    padding:10px 16px;border:1px solid var(--hairline);border-radius:1px;
+    background:rgba(6,9,11,.35);backdrop-filter:blur(6px);
+  }
+  .ad-tag-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 12px var(--accent);animation:adPulse 2.4s ease-in-out infinite}
+  @keyframes adPulse{0%,100%{opacity:.6}50%{opacity:1}}
+
+  .ad-body{
+    display:flex;flex-direction:column;justify-content:center;align-items:center;
+    flex:1;max-width:980px;margin:0 auto;text-align:center;
+    padding:clamp(8px,2vh,28px) 0;
+    text-shadow:0 2px 24px rgba(6,9,11,.55);
+  }
+  .ad-headline{font-size:clamp(40px,5vw,76px);text-align:center}
+  .ad-sub{
+    margin-top:22px;font-size:17px;line-height:1.5;color:var(--on-dark);
+    letter-spacing:.06em;text-transform:uppercase;font-family:'Inter',sans-serif;font-weight:500;
+    opacity:0;transform:translateY(14px);animation:fadeUp 1s ease .9s forwards;
+  }
+  /* Price — the dominant element */
+  .ad-price{
+    margin-top:14px;display:flex;align-items:baseline;justify-content:center;gap:.06em;
+    font-family:'Fraunces',Georgia,serif;font-weight:400;font-variation-settings:'opsz' 144;
+    color:var(--accent);line-height:1;letter-spacing:-.02em;
+    text-shadow:0 4px 32px rgba(6,9,11,.65);
+    opacity:0;transform:translateY(14px);animation:fadeUp 1s ease 1s forwards;
+  }
+  .ad-price .ad-price-currency{font-size:clamp(28px,3vw,42px);font-style:italic;color:var(--accent);opacity:1;align-self:flex-start;margin-top:.4em}
+  .ad-price .ad-price-num{font-size:clamp(72px,9vw,128px);font-style:italic}
+  .ad-price .ad-price-unit{font-family:'Inter',sans-serif;font-style:normal;font-weight:500;font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--on-dark);margin-left:12px;align-self:center;transform:translateY(.1em)}
+  .ad-pricecaption{
+    margin-top:6px;font-family:'JetBrains Mono','SFMono-Regular',monospace;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--on-dark-soft);
+    opacity:0;transform:translateY(14px);animation:fadeUp 1s ease 1.1s forwards;
+  }
+  .ad-ctas{
+    margin-top:34px;display:flex;align-items:center;justify-content:center;gap:24px;flex-wrap:wrap;
+    opacity:0;transform:translateY(14px);animation:fadeUp 1s ease 1.2s forwards;
+  }
+  .ad-fineprint{color:var(--on-dark);font-size:12px;letter-spacing:.18em}
+
+  /* animations */
+  @keyframes rise{to{transform:translateY(0);opacity:1}}
+  @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+  /* short viewports (and small embedded iframes) — keep the meta strip from getting clipped */
+  @media (max-height:760px){
+    .frame{padding:24px clamp(24px,4vw,56px) 24px;gap:18px}
+    .lede{margin-top:24px}
+    .ctas{margin-top:28px}
+    .meta{padding-top:16px}
+    .features{gap:32px}
+  }
+  @media (max-height:620px){
+    .scroll-cue{display:none}
+    .features{gap:22px}
+    .feat-sub{display:none}
+  }
+
+  /* responsive */
+  @media (max-width:880px){
+    .nav-links{display:none}
+    .frame{padding:22px 22px 28px}
+    .features{gap:24px}
+    .feat:nth-child(3){display:none}
+    .scroll-cue{display:none}
+    h1.headline{font-size:clamp(44px,11vw,72px)}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .bg video{animation:none}
+    h1.headline .word > span{animation-duration:.01s}
+    .lede,.ctas,.meta{animation-duration:.01s}
+  }
+</style>
+</head>
+<body>
+
+<section class="stage">
+  <!-- video background -->
+  <div class="bg" id="bg">
+    <div class="poster" aria-hidden="true"></div>
+    <video
+      id="bgvid"
+      autoplay muted loop playsinline preload="metadata"
+      disablepictureinpicture disableremoteplayback
+      poster=""
+      aria-hidden="true">
+      <source src="apartment-bg.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <div class="veil top"></div>
+  <div class="veil left"></div>
+  <div class="veil bottom"></div>
+  <div class="grain"></div>
+
+  <div class="frame ad-frame">
+
+    <!-- AD HEADER -->
+    <header class="ad-head">
+      <a href="#" class="brand" aria-label="Northview Apartments">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 30 38">
+            <path d="M3 36 V14 L11 8 V36 Z"/>
+            <path d="M19 36 V18 L27 12 V36 Z"/>
+            <path d="M3 36 H27"/>
+            <path d="M6 30 H8 M6 24 H8 M6 18 H8"/>
+            <path d="M22 30 H24 M22 24 H24"/>
+          </svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-name">NORTHVIEW</span>
+          <span class="brand-sub">APARTMENTS</span>
+        </span>
+      </a>
+      <span class="ad-tag mono">
+        <span class="ad-tag-dot" aria-hidden="true"></span>
+        Now Leasing
+      </span>
+    </header>
+
+    <!-- AD BODY -->
+    <div class="ad-body">
+      <h1 class="headline ad-headline" aria-label="Elevated Living. Everyday Comfort.">
+        <span class="word"><span style="animation-delay:.05s">Elevated</span></span>
+        <span class="word"><span style="animation-delay:.18s">Living.</span></span>
+        <br>
+        <span class="word"><span class="em" style="animation-delay:.34s">Everyday</span></span>
+        <span class="word"><span class="em" style="animation-delay:.48s">Comfort.</span></span>
+      </h1>
+
+      <p class="ad-sub">Studios, 1 &amp; 2 bedrooms — starting from</p>
+
+      <div class="ad-price" aria-label="Starting at $1,895 per month">
+        <span class="ad-price-currency">$</span><span class="ad-price-num">1,895</span><span class="ad-price-unit">/ month</span>
+      </div>
+
+      <div class="ad-ctas">
+        <a href="#tour" class="btn btn-primary">Schedule a Tour</a>
+        <span class="ad-fineprint mono">Limited units · Move-in specials</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  (function(){
+    var bg = document.getElementById('bg');
+    var v  = document.getElementById('bgvid');
+    if(!v) return;
+
+    function ready(){ bg.classList.add('is-ready'); }
+
+    // Reveal as soon as we have actual video frames
+    if (v.readyState >= 2) ready();
+    v.addEventListener('loadeddata', ready, {once:true});
+    v.addEventListener('canplay',    ready, {once:true});
+
+    // Force play on iOS / autoplay edge cases
+    var tryPlay = function(){
+      var p = v.play();
+      if (p && p.catch) p.catch(function(){});
+    };
+    tryPlay();
+    document.addEventListener('visibilitychange', function(){
+      if(document.visibilityState === 'visible') tryPlay();
+    });
+
+    // Pause when the tab/iframe is offscreen — saves battery + decode work
+    if ('IntersectionObserver' in window){
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting) tryPlay();
+          else v.pause();
+        });
+      }, {threshold:.05});
+      io.observe(bg);
+    }
+
+    // Respect reduced-motion: freeze on first frame
+    var rm = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (rm.matches){
+      v.addEventListener('loadeddata', function(){ v.pause(); }, {once:true});
+    }
+  })();
+</script>
+
+</body>
+</html>

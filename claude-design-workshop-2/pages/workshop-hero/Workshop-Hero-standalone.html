@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hero — Claude Design Workshop</title>
+<meta name="description" content="Standalone hero — coffee background, v4 layout.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%234B2400'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"></noscript>
+<link rel="preload" as="image" href="hero-video-poster.webp" fetchpriority="high">
+<link rel="preload" as="video" href="coffee-intro.mp4" type="video/mp4" fetchpriority="high">
+<style>
+  :root{
+    --coffee:#462000;        /* deep coffee brown — the spill color */
+    --cream-bg:#c5b3a5;      /* warm grayish-beige — matches the video's edge tone exactly */
+    --cream:#fdf6ed;         /* cream foreground used in coffee phase */
+    --canvas:#462000;        /* page canvas matches the coffee spill so hero hands off seamlessly */
+    --primary:#D97757;       /* terracotta accent */
+    --primary-active:#bf6244;
+    --success:#5db872;
+    --ink:#141413;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Inter',ui-sans-serif,system-ui,sans-serif;
+    line-height:1.55;color:var(--ink);background:var(--canvas);overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  ::selection{background:var(--primary);color:#fff}
+
+  /* ============ HERO ============ */
+  /* Stages:
+     1. Cream phase — coffee-intro plays, hero is light cream like v4
+     2. Spill morph — a coffee-colored wash fades in over the whole hero
+        (including the video) until the entire section is solid #4B2400
+     3. Coffee phase — hero is fully brown; loop video plays underneath but
+        is masked by the wash. Hero text becomes cream. */
+  /* HERO
+     Phases:
+     1. Video phase — bg matches the video's dark warm tone (no seam, no fade).
+     2. Spill phase — wash overlay morphs deep → mid → spill orange covering the whole hero.
+     3. Coffee phase — hero is fully orange; loop video plays underneath, lens reveals on hover. */
+  .hero{
+    position:relative;min-height:125vh;
+    background:#000;
+    overflow:hidden;
+    color:#141413; /* black text reads on the warm beige video bg */
+    --wash:0;
+    transition:color .6s ease;
+  }
+  /* Once coffee spill covers the screen, text fades to white. */
+  .hero.is-coffee{ color:var(--cream); }
+  .hero.is-coffee .hero-corner-r b{ color:var(--cream); }
+  /* Video fills the entire hero — no beige bg, no top/bottom fades. */
+  .hero-video-wrap{
+    position:absolute;inset:0;
+    height:100%;
+  }
+  .hero-video-topfade{ display:none !important; }
+  .hero-bg-fade{ display:none !important; }
+  .hero::after{ display:none !important; }
+  .hero-bg{
+    position:absolute;inset:0;
+    width:100%;height:100%;object-fit:cover;
+    transition:opacity .4s linear;
+  }
+  .hero-bg-intro{ z-index:1; }
+  .hero-bg-loop{ z-index:0; opacity:0; }
+  .hero.is-loop-ready .hero-bg-loop{ opacity:1; }
+  .hero.is-loop-ready .hero-bg-intro{ opacity:0; }
+
+  /* Coffee wash: full-bleed solid #4B2400 that fades in over EVERYTHING
+     (including the video). When --wash hits 1, the whole hero is brown. */
+  .hero-coffee-wash{
+    position:absolute;inset:0;z-index:4;pointer-events:none;
+    background:var(--coffee);
+    opacity:var(--wash);
+    transition:opacity .25s linear;
+    will-change:opacity;
+  }
+  /* Cream-phase fade above the video (matches v4). In coffee phase the wash covers it. */
+  .hero-bg-fade{
+    display:none;
+    position:absolute;inset:0;
+    height:100%;z-index:2;pointer-events:none;
+    opacity:calc(1 - var(--wash));
+    transition:opacity .35s linear;
+    background:
+      linear-gradient(180deg,
+        var(--cream-bg) 0%,
+        rgba(253,246,237,0.92) 10%,
+        rgba(253,246,237,0.7)  22%,
+        rgba(253,246,237,0.4)  36%,
+        rgba(253,246,237,0.15) 48%,
+        rgba(253,246,237,0)    58%,
+        rgba(250,249,245,0)    62%,
+        rgba(250,249,245,0.18) 72%,
+        rgba(250,249,245,0.5)  82%,
+        rgba(250,249,245,0.85) 92%,
+        var(--canvas)          100%);
+  }
+  .hero-sticky{
+    position:relative;width:100%;min-height:125vh;display:flex;flex-direction:column;
+    background:transparent;
+  }
+
+  /* Content sits ABOVE the coffee wash so CTAs + meta + headline remain
+     visible (and recolor cream-on-coffee) once the spill completes. */
+  .hero-content{
+    position:relative;z-index:6;
+    display:flex;flex-direction:column;justify-content:flex-start;align-items:center;text-align:center;
+    padding:120px 28px 80px;
+    color:inherit;
+  }
+  .hero-eye{
+    display:inline-flex;align-items:center;gap:12px;
+    font-family:'JetBrains Mono',monospace;font-size:14px;letter-spacing:.22em;text-transform:uppercase;
+    font-weight:500;margin-bottom:34px;color:inherit;
+  }
+  .hero-eye .dot{
+    width:10px;height:10px;border-radius:50%;background:var(--primary);
+    box-shadow:0 0 0 5px rgba(217,119,87,.22);
+    animation:pulseDot 1.8s ease-in-out infinite;
+  }
+  @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.4}}
+  .hero-h1{
+    font-family:'Copernicus','Fraunces',Georgia,serif;font-weight:400;
+    font-size:clamp(60px,9.5vw,152px);line-height:.95;letter-spacing:-.04em;
+    color:inherit;max-width:18ch;margin-bottom:28px;
+  }
+  /* Italic accent: terracotta in BOTH phases (stays orange). */
+  .hero-h1 em{
+    font-style:italic;
+    color:var(--primary);
+  }
+  .hero-sub{
+    font-family:'Inter',sans-serif;font-size:clamp(16px,1.4vw,19px);line-height:1.55;
+    color:inherit;opacity:.78;max-width:60ch;margin-bottom:38px;
+  }
+
+  /* Squared CTAs */
+  .hero-ctas{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-bottom:60px}
+  .btn-pri{
+    display:inline-flex;align-items:center;gap:10px;
+    background:var(--primary);color:#fff;
+    padding:16px 28px;border-radius:0;
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;
+    transition:transform .25s ease, background .25s ease;
+  }
+  .btn-pri:hover{background:var(--primary-active);transform:translateY(-2px)}
+  .btn-sec{
+    display:inline-flex;align-items:center;gap:10px;
+    background:transparent;color:inherit;
+    border:1px solid currentColor;
+    padding:16px 28px;border-radius:0;
+    font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;font-weight:500;
+    opacity:.85;
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .btn-sec:hover{opacity:1;transform:translateY(-2px)}
+
+  /* Info row: Date · Time · Format */
+  .hero-info{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    width:100%;max-width:880px;
+    border-top:1px solid currentColor;border-bottom:1px solid currentColor;
+    opacity:.95;
+  }
+  .hero-info .ic{
+    padding:22px 24px;text-align:left;
+    border-right:1px solid currentColor;
+  }
+  .hero-info .ic:last-child{border-right:none}
+  .hero-info dt{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+    font-weight:500;opacity:.65;margin-bottom:8px;color:inherit;
+  }
+  .hero-info dd{
+    font-family:'Copernicus','Fraunces',Georgia,serif;font-weight:400;font-size:18px;letter-spacing:-.015em;color:inherit;line-height:1.2;
+  }
+  .hero-info dd em{font-style:italic}
+
+  .hero-corner-l{
+    position:absolute;top:24px;left:30px;z-index:7;
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+    color:inherit;font-weight:500;opacity:.7;
+  }
+  .hero-corner-r{
+    position:absolute;top:24px;right:30px;z-index:7;
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+    color:inherit;font-weight:500;opacity:.7;
+    display:flex;gap:14px;align-items:center;
+  }
+  .hero-corner-r b{color:var(--primary);font-weight:500}
+
+  @media (max-width:767px){
+    .hero{min-height:0}
+    .hero-sticky{min-height:0}
+    .hero-corner-l{font-size:8px;letter-spacing:.14em;top:20px}
+    .hero-corner-r{font-size:8px;letter-spacing:.14em;top:38px;right:auto;left:30px}
+    .hero-h1 br{display:none}
+    .hero-content{padding-top:56px;padding-bottom:0}
+    .hero-eye{margin-bottom:14px}
+    .hero-sub{margin-bottom:20px}
+    .hero-ctas{margin-bottom:28px}
+    /* On mobile the video stacks BELOW the hero content (v4 behavior). */
+    .hero-video-wrap{position:relative;height:52vh;width:100%;bottom:auto;left:auto;right:auto;inset:auto}
+    .hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .hero-coffee-wash{position:absolute;inset:0}
+    .hero-corner-l,.hero-corner-r{display:none}
+    .logo-mq{padding-top:6px!important;padding-bottom:44px!important}
+  }
+  @media (max-width:640px){
+    .hero-content{padding:80px 20px 40px}
+    .hero-eye{font-size:10px;letter-spacing:.16em;gap:8px}
+    .hero-eye .dot{width:7px;height:7px}
+    .hero-h1{font-size:clamp(56px,15vw,90px)}
+    .hero-sub{font-size:15px}
+    .btn-pri,.btn-sec{padding:14px 22px;font-size:10px}
+    .hero-info{grid-template-columns:1fr}
+    .hero-info .ic{border-right:none;border-bottom:1px solid currentColor}
+    .hero-info .ic:last-child{border-bottom:none}
+  }
+
+  /* ============ LOGO MARQUEE (v4) ============ */
+  .logo-mq{
+    background:var(--canvas);
+    color:var(--cream);
+    padding:140px 0 76px;
+    position:relative;
+  }
+  .logo-mq::before,.logo-mq::after{display:none}
+  .logo-mq > *{position:relative;z-index:1}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 28px}
+  .logo-mq-head{
+    display:flex;align-items:center;gap:18px;
+    margin-bottom:48px;
+  }
+  .logo-mq-eye{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.26em;text-transform:uppercase;
+    color:rgba(253,246,237,.62);font-weight:500;display:inline-flex;align-items:center;gap:10px;
+    flex-shrink:0;
+  }
+  .logo-mq-rule{flex:1;height:1px;background:rgba(253,246,237,.16)}
+  .logo-mq-meta{
+    font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+    color:rgba(253,246,237,.62);font-weight:500;flex-shrink:0;
+  }
+  .logo-mq-rail{
+    overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+            mask-image:linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
+  }
+  .logo-mq-track{
+    display:flex;align-items:center;gap:0;width:max-content;
+    animation:logo-scroll 50s linear infinite;
+  }
+  @keyframes logo-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .lm-item{
+    display:inline-flex;align-items:center;gap:14px;
+    font-family:'Copernicus','Fraunces',Georgia,serif;font-weight:400;
+    font-size:clamp(28px,3.4vw,46px);letter-spacing:-.025em;color:var(--cream);
+    padding:24px 60px;white-space:nowrap;
+  }
+  .lm-item img{
+    height:.85em;width:auto;display:block;
+    /* Logos invert nicely against the deep coffee canvas */
+    filter:grayscale(1) brightness(2.4) contrast(.7) opacity(.78);
+  }
+  .lm-dot{font-family:'Copernicus','Fraunces',Georgia,serif;font-size:clamp(28px,3.4vw,46px);color:rgba(253,246,237,.18);font-weight:400;line-height:1;transform:translateY(-.18em)}
+
+  @media (max-width:560px){
+    .logo-mq-meta{display:none}
+    .logo-mq{padding:44px 0 56px}
+    .logo-mq-head{margin-bottom:32px}
+  }
+</style>
+</head>
+<body>
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="hero-sticky">
+    <div class="hero-corner-l">Claude · Design Workshop</div>
+    <div class="hero-corner-r">
+      <span>NYC + Remote</span>
+      <span>·</span>
+      <span><b>40 seats</b></span>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-eye"><span class="dot"></span>Live half a Day Training</div>
+      <h1 class="hero-h1">The Official Claude<br/><em>Design</em> Workshop</h1>
+      <p class="hero-sub">Go from blank page to a live, beautifully designed landing page in half a day. Hands-on building with senior designers, no code required.</p>
+      <div class="hero-ctas">
+        <a class="btn-pri" href="#reserve">Reserve your spot →</a>
+        <a class="btn-sec" href="#agenda">See full agenda</a>
+      </div>
+      <dl class="hero-info">
+        <div class="ic"><dt>Date</dt><dd>Thursday, <em>May 14, 2026</em></dd></div>
+        <div class="ic"><dt>Time</dt><dd>10:00 AM – 1:30 PM <em>EDT</em></dd></div>
+        <div class="ic"><dt>Format</dt><dd>Live · <em>Hands-on</em></dd></div>
+      </dl>
+    </div>
+
+    <div class="hero-video-wrap">
+      <!-- Loop video sits underneath; reveals once intro completes (and is then masked by the wash). -->
+      <video class="hero-bg hero-bg-loop" id="heroLoop" muted loop playsinline preload="metadata" poster="hero-video-poster.webp" disablepictureinpicture aria-hidden="true"></video>
+      <!-- Intro coffee-spill: plays once, drives the wash morph. -->
+      <video class="hero-bg hero-bg-intro" id="heroIntro" autoplay muted playsinline preload="auto" poster="hero-video-poster.webp" fetchpriority="high" disablepictureinpicture></video>
+      <div class="hero-video-topfade" aria-hidden="true"></div>
+      <div class="hero-bg-fade"></div>
+      <div class="hero-coffee-wash" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOGO MARQUEE ============ -->
+<section class="logo-mq" aria-label="Trusted by">
+  <div class="wrap logo-mq-head">
+    <span class="logo-mq-eye">✦ Designers shipping at</span>
+    <span class="logo-mq-rule"></span>
+    <span class="logo-mq-meta">450,000+ students · trusted by</span>
+  </div>
+  <div class="logo-mq-rail">
+    <div class="logo-mq-track" id="logoTrack">
+      <span class="lm-item"><img src="https://adventuremedia.ai/images/client-logos/forbes-2.png" alt="Forbes" loading="lazy"></span>
+      <span class="lm-dot">·</span>
+      <span class="lm-item"><img src="https://adventuremedia.ai/images/client-logos/nasdaq.png" alt="Nasdaq" loading="lazy"></span>
+      <span class="lm-dot">·</span>
+      <span class="lm-item"><img src="https://adventuremedia.ai/images/client-logos/amc-networks.png" alt="AMC Networks" loading="lazy"></span>
+      <span class="lm-dot">·</span>
+      <span class="lm-item"><img src="https://adventuremedia.ai/images/client-logos/asurion.png" alt="Asurion" loading="lazy"></span>
+      <span class="lm-dot">·</span>
+      <span class="lm-item"><img src="https://adventuremedia.ai/images/client-logos/michael-aram.png" alt="Michael Aram" loading="lazy"></span>
+      <span class="lm-dot">·</span>
+      <span class="lm-item"><img src="https://adventuremedia.ai/images/client-logos/kars4kids.png" alt="Kars4Kids" loading="lazy"></span>
+      <span class="lm-dot">·</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<script>
+  /*
+   * Hero coffee-spill choreography
+   * - Intro video plays. At SPILL_AT seconds, we begin morphing the coffee wash
+   *   from 0 → 1, fading in a solid #4B2400 layer over the entire hero.
+   * - Once the wash is fully opaque, we swap to the loop video underneath
+   *   (still hidden behind the wash) and mark the hero coffee phase, which
+   *   recolors the bg + text to cream-on-coffee.
+   */
+  (function(){
+    const SPILL_AT = 9.22;        // moment the brown floods the frame
+    const MORPH_DURATION = 1.6;   // seconds for wash 0 → 1
+    const hero  = document.getElementById('hero');
+    const intro = document.getElementById('heroIntro');
+    const loop  = document.getElementById('heroLoop');
+    if(!hero || !intro || !loop) return;
+
+    function loadVideo(videoEl, src, opts){
+      opts = opts || {};
+      videoEl.src = src;
+      if(opts.autoplay){
+        const tryPlay = () => videoEl.play().catch(()=>{});
+        videoEl.addEventListener('loadeddata', tryPlay, { once:true });
+        tryPlay();
+      }
+      // Upgrade to a blob URL once fully fetched (smoother seeking).
+      fetch(src).then(r=>r.blob()).then(b=>{
+        const url = URL.createObjectURL(b);
+        const t = videoEl.currentTime;
+        const wasPlaying = !videoEl.paused;
+        videoEl.src = url; videoEl.load();
+        videoEl.addEventListener('loadeddata', ()=>{
+          try{ videoEl.currentTime = t; }catch(_){}
+          if(wasPlaying || opts.autoplay) videoEl.play().catch(()=>{});
+        }, { once:true });
+      }).catch(()=>{});
+    }
+
+    loadVideo(intro, 'assets/coffee-intro.mp4', { autoplay:true });
+
+    let morphStarted = false;
+    let morphComplete = false;
+    function setWash(v){
+      v = Math.max(0, Math.min(1, v));
+      hero.style.setProperty('--wash', v.toFixed(3));
+    }
+
+    function tick(){
+      if(!intro.isConnected) return;
+      const t = intro.currentTime;
+      if(t >= SPILL_AT && !morphComplete){
+        const p = Math.min(1, (t - SPILL_AT) / MORPH_DURATION);
+        const eased = p < .5 ? 4*p*p*p : 1 - Math.pow(-2*p + 2, 3)/2;
+        setWash(eased);
+        if(!morphStarted){
+          morphStarted = true;
+          loadVideo(loop, 'assets/coffee-loop.mp4', { autoplay:false });
+        }
+        if(p >= 1){
+          morphComplete = true;
+          hero.classList.add('is-coffee','is-loop-ready');
+          loop.play().catch(()=>{});
+          intro.pause();
+        }
+      }
+      if(!morphComplete) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    // Safety: if the intro ends before our calc'd morph completes, force final state.
+    intro.addEventListener('ended', ()=>{
+      if(!morphComplete){
+        setWash(1);
+        morphComplete = true;
+        hero.classList.add('is-coffee','is-loop-ready');
+        loadVideo(loop, 'assets/coffee-loop.mp4', { autoplay:false });
+        loop.play().catch(()=>{});
+      }
+    });
+
+    // Battery: pause loop when hero scrolls offscreen.
+    if('IntersectionObserver' in window){
+      const io = new IntersectionObserver((entries)=>{
+        for(const ent of entries){
+          if(!morphComplete) continue;
+          if(ent.isIntersecting) loop.play().catch(()=>{});
+          else loop.pause();
+        }
+      }, { threshold: 0.05 });
+      io.observe(hero);
+    }
+
+    // Reduced motion: skip the intro entirely, snap to coffee phase.
+    if(matchMedia('(prefers-reduced-motion:reduce)').matches){
+      setWash(1);
+      morphComplete = true;
+      hero.classList.add('is-coffee','is-loop-ready');
+      intro.pause();
+      loadVideo(loop, 'assets/coffee-loop.mp4', { autoplay:false });
+      loop.play().catch(()=>{});
+    }
+  })();
+
+  // Duplicate logo marquee items so the infinite scroll has seamless loop
+  (function(){
+    const track = document.getElementById('logoTrack');
+    if(!track) return;
+    track.innerHTML += track.innerHTML;
+  })();
+</script>
+</body>
+</html>
