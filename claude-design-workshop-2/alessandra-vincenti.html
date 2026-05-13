@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alessandra Vincenti — Art Direction & Visual Storytelling</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black:  #080808;
+      --deep:   #0d0505;
+      --red:    #8b1c1c;
+      --red2:   #c0281e;
+      --cream:  #ede7de;
+      --white:  #ffffff;
+      --dim:    rgba(255,255,255,0.38);
+      --serif:  'Cormorant Garamond', serif;
+      --sans:   'Montserrat', sans-serif;
+    }
+
+    html { scroll-behavior: auto; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--sans);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── GRAIN ─────────────────────────────────── */
+    #grain {
+      position: fixed; inset: -50%;
+      width: 200%; height: 200%;
+      opacity: .045;
+      pointer-events: none;
+      z-index: 9997;
+      animation: grainShift .45s steps(1) infinite;
+    }
+    @keyframes grainShift {
+      0%   { transform: translate(0,0); }
+      10%  { transform: translate(-4%,-8%); }
+      25%  { transform: translate(6%,3%); }
+      40%  { transform: translate(-7%,12%); }
+      55%  { transform: translate(3%,-6%); }
+      70%  { transform: translate(-2%,8%); }
+      85%  { transform: translate(8%,-3%); }
+      100% { transform: translate(-4%,5%); }
+    }
+
+    /* ── CURSOR ────────────────────────────────── */
+    #cur  { position:fixed; top:0; left:0; width:7px; height:7px; background:var(--white); border-radius:50%; pointer-events:none; z-index:10000; transform:translate(-50%,-50%); mix-blend-mode:difference; }
+    #ring { position:fixed; top:0; left:0; width:38px; height:38px; border:1px solid rgba(255,255,255,.45); border-radius:50%; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .35s,height .35s,border-color .35s; mix-blend-mode:difference; }
+    #ring.big { width:68px; height:68px; border-color:rgba(255,255,255,.7); }
+
+    /* ── PROGRESS ──────────────────────────────── */
+    #progress { position:fixed; top:0; left:0; height:1.5px; background:var(--red2); z-index:10001; width:0; transition:width .05s linear; }
+
+    /* ── LOADER ────────────────────────────────── */
+    #loader {
+      position: fixed; inset: 0;
+      background: var(--black);
+      z-index: 9998;
+      display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 1.4rem;
+    }
+    .ld-logo { font-family:var(--serif); font-size: clamp(2rem,5vw,3.5rem); font-weight:300; letter-spacing:.5em; overflow:hidden; }
+    .ld-logo span { display:inline-block; transform:translateY(120%); }
+    .ld-bar { width:0; height:1px; background:var(--red); transition: width 1s ease; }
+
+    /* ── NAV ───────────────────────────────────── */
+    nav {
+      position: fixed; top:0; left:0; right:0; z-index:1000;
+      padding: 2rem 3rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .n-logo { font-family:var(--serif); font-size:1.15rem; letter-spacing:.12em; color:var(--white); text-decoration:none; opacity:0; }
+    .n-links { display:flex; gap:2.8rem; list-style:none; }
+    .n-links a { font-size:.65rem; font-weight:300; letter-spacing:.22em; color:var(--white); text-decoration:none; opacity:0; position:relative; transition:color .3s; }
+    .n-links a::after { content:''; position:absolute; bottom:-3px; left:0; width:0; height:1px; background:var(--red2); transition:width .35s; }
+    .n-links a:hover::after { width:100%; }
+    .n-menu { display:flex; align-items:center; gap:.5rem; font-size:.65rem; font-weight:300; letter-spacing:.22em; opacity:0; cursor:none; }
+    .n-dot { width:5px; height:5px; background:var(--red2); border-radius:50%; animation:blink 2s ease infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+    /* ── SCROLL LABEL ──────────────────────────── */
+    #scrolllabel {
+      position:fixed; right:2.5rem; bottom:3rem; z-index:100;
+      writing-mode:vertical-rl; font-size:.58rem; letter-spacing:.35em; color:rgba(255,255,255,.28);
+      display:flex; align-items:center; gap:.9rem; opacity:0;
+    }
+    #scrolllabel::after { content:''; width:1px; height:44px; background:linear-gradient(to bottom,var(--red2),transparent); animation:drip 1.6s ease infinite; }
+    @keyframes drip { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+
+    /* ── HERO ──────────────────────────────────── */
+    .hero {
+      min-height:100vh;
+      display:grid; grid-template-columns:1fr 1fr;
+      position:relative; overflow:hidden;
+    }
+    .hero-content {
+      display:flex; flex-direction:column; justify-content:flex-end;
+      padding: 0 4rem 6.5rem; position:relative; z-index:2;
+    }
+    .hero-title {
+      font-family:var(--serif);
+      font-size: clamp(4rem,9.5vw,11rem);
+      font-weight:300; line-height:.88; letter-spacing:-.02em;
+      margin-bottom:2.2rem;
+    }
+    .hero-title .ln { display:block; overflow:hidden; }
+    .hero-title .wd { display:inline-block; transform:translateY(115%); }
+    .hero-sub {
+      font-family:var(--serif); font-style:italic;
+      font-size: clamp(1.05rem,1.8vw,1.35rem);
+      font-weight:300; color:var(--cream); line-height:1.5;
+      margin-bottom:3rem; opacity:0; transform:translateY(24px);
+    }
+    .hero-cta {
+      display:inline-flex; align-items:center; gap:.9rem;
+      text-decoration:none; color:var(--white);
+      font-size:.7rem; font-weight:300; letter-spacing:.32em;
+      opacity:0; transform:translateY(24px); position:relative;
+    }
+    .hero-cta::before { content:''; position:absolute; bottom:-5px; left:0; width:100%; height:1px; background:var(--red); transform:scaleX(0); transform-origin:left; transition:transform .4s ease; }
+    .hero-cta:hover::before { transform:scaleX(1); }
+    .cta-arr { color:var(--red2); transition:transform .3s; }
+    .hero-cta:hover .cta-arr { transform:translateX(7px); }
+
+    .hero-img { position:relative; overflow:hidden; clip-path:inset(0 100% 0 0); }
+    .hero-img-inner {
+      position:absolute; inset:-15%;
+    }
+    .hero-girl {
+      position:absolute; inset:0;
+      background: url('assets/alessandra.jpg') center 20% / cover no-repeat;
+      animation: girlFloat 7s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+    @keyframes girlFloat {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      30%       { transform: translateY(-14px) scale(1.015); }
+      60%       { transform: translateY(-8px) scale(1.008); }
+    }
+    .hero-img-inner::after {
+      content:'';
+      position:absolute; inset:0; z-index:1;
+      background:
+        linear-gradient(to right, #080808 0%, rgba(8,8,8,.85) 18%, rgba(8,8,8,.3) 38%, transparent 58%),
+        linear-gradient(to top, rgba(8,8,8,.5) 0%, transparent 30%);
+    }
+
+    /* ── MARQUEE ───────────────────────────────── */
+    .marquee-wrap {
+      padding:1.2rem 0; overflow:hidden;
+      border-top:1px solid rgba(255,255,255,.06);
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background:rgba(255,255,255,.018);
+    }
+    .marquee-track { display:flex; white-space:nowrap; animation:marquee 22s linear infinite; }
+    .marquee-track:hover { animation-play-state:paused; }
+    .mi { font-family:var(--serif); font-style:italic; font-size:.88rem; font-weight:300; letter-spacing:.1em; color:rgba(255,255,255,.18); padding:0 2.5rem; }
+    .mi b { color:var(--red); font-weight:400; margin:0 .5rem; }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ── ABOUT ─────────────────────────────────── */
+    .about {
+      display:grid; grid-template-columns:1fr 1fr 1fr;
+      min-height:72vh;
+      border-top:1px solid rgba(255,255,255,.07);
+    }
+    .ab-bio {
+      padding:5.5rem 3.5rem; display:flex; flex-direction:column; justify-content:center;
+      border-right:1px solid rgba(255,255,255,.07);
+    }
+    .ab-bio p {
+      font-size:.78rem; font-weight:300; line-height:2; color:rgba(255,255,255,.58);
+      opacity:0; transform:translateY(30px);
+    }
+    .ab-services {
+      padding:5.5rem 3.5rem; display:flex; flex-direction:column; justify-content:center;
+      border-right:1px solid rgba(255,255,255,.07);
+    }
+    .svc {
+      display:flex; align-items:baseline; gap:2rem;
+      padding:1.4rem 0; border-bottom:1px solid rgba(255,255,255,.07);
+      opacity:0; transform:translateX(50px);
+      cursor:none;
+    }
+    .svc:first-child { border-top:1px solid rgba(255,255,255,.07); }
+    .svc-n { font-size:.6rem; font-weight:300; letter-spacing:.12em; color:rgba(255,255,255,.28); min-width:2rem; }
+    .svc-t { font-family:var(--serif); font-style:italic; font-size:1.1rem; font-weight:300; transition:letter-spacing .4s,color .3s; }
+    .svc:hover .svc-t { letter-spacing:.06em; color:var(--cream); }
+    .svc-arrow { font-size:.8rem; color:var(--red); margin-left:auto; opacity:0; transform:translateX(-8px); transition:opacity .3s,transform .3s; }
+    .svc:hover .svc-arrow { opacity:1; transform:translateX(0); }
+    .ab-img {
+      position:relative; overflow:hidden; clip-path:inset(0 0 100% 0);
+      background: url('assets/alessandra.jpg') center 15% / cover no-repeat;
+    }
+    .ab-img::after {
+      content:''; position:absolute; inset:0;
+      background:
+        linear-gradient(90deg, rgba(8,8,8,.6) 0%, transparent 40%),
+        linear-gradient(to top, rgba(8,8,8,.5) 0%, transparent 50%);
+    }
+    .ab-img-shape { display:none; }
+
+
+    /* ── VISION ────────────────────────────────── */
+    .vision {
+      min-height:100vh;
+      display:flex; flex-direction:column; justify-content:center;
+      padding:8rem 4rem; position:relative; overflow:hidden;
+    }
+    .vision-glow {
+      position:absolute; inset:0; pointer-events:none;
+      background:radial-gradient(ellipse at 75% 75%, rgba(100,0,0,.18) 0%, transparent 60%);
+      transform:scale(1);
+    }
+    .v-word { font-family:var(--serif); font-size:clamp(5rem,14vw,16rem); font-weight:300; line-height:.9; display:block; overflow:hidden; }
+    .v-inner { display:block; transform:translateY(110%); opacity:0; }
+    .v-word:last-of-type .v-inner { color:var(--red2); }
+    .vision-meta {
+      position:absolute; bottom:4rem; right:4rem;
+      display:flex; flex-direction:column; align-items:flex-end; gap:1.8rem;
+      opacity:0;
+    }
+    .vision-meta p { font-size:.58rem; letter-spacing:.25em; color:rgba(255,255,255,.35); line-height:2; text-align:right; }
+    .monogram {
+      font-family:var(--serif); font-size:4.5rem; font-weight:300; line-height:1;
+      color:transparent; -webkit-text-stroke:1px rgba(139,28,28,.7);
+      letter-spacing:-.05em; position:relative;
+    }
+    .monogram span { position:absolute; top:.35em; left:.3em; font-style:italic; font-size:.55em; color:transparent; -webkit-text-stroke:1px rgba(139,28,28,.45); }
+
+    /* ── FOOTER ────────────────────────────────── */
+    footer {
+      padding:2.5rem 3rem;
+      display:flex; align-items:center; justify-content:space-between;
+      border-top:1px solid rgba(255,255,255,.07);
+      opacity:0; transform:translateY(20px);
+    }
+    .fc { font-size:.58rem; font-weight:300; letter-spacing:.15em; color:rgba(255,255,255,.28); }
+    .fl { display:flex; gap:2.5rem; }
+    .fl a { font-size:.58rem; font-weight:300; letter-spacing:.2em; color:rgba(255,255,255,.45); text-decoration:none; transition:color .3s; cursor:none; position:relative; }
+    .fl a::after { content:''; position:absolute; bottom:-2px; left:0; width:0; height:1px; background:var(--red2); transition:width .35s; }
+    .fl a:hover { color:var(--white); }
+    .fl a:hover::after { width:100%; }
+  </style>
+</head>
+<body>
+
+  <!-- Grain canvas -->
+  <canvas id="grain"></canvas>
+
+  <!-- Cursor -->
+  <div id="cur"></div>
+  <div id="ring"></div>
+
+  <!-- Progress -->
+  <div id="progress"></div>
+
+  <!-- Loader -->
+  <div id="loader">
+    <div class="ld-logo"><span>A / V</span></div>
+    <div class="ld-bar" id="ldbar"></div>
+  </div>
+
+  <!-- Nav -->
+  <nav>
+    <a href="#" class="n-logo">A / V</a>
+    <ul class="n-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#editorial">Editorial</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="n-menu"><span class="n-dot"></span>MENU</div>
+  </nav>
+
+  <!-- Scroll label -->
+  <div id="scrolllabel">SCROLL</div>
+
+  <!-- ── HERO ── -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="ln"><span class="wd">ALESSANDRA</span></span>
+        <span class="ln"><span class="wd">VINCENTI</span></span>
+      </h1>
+      <p class="hero-sub">Art Direction &amp;<br>Visual Storytelling</p>
+      <a href="#work" class="hero-cta">VIEW WORK <span class="cta-arr">→</span></a>
+    </div>
+    <div class="hero-img" id="heroImg">
+      <div class="hero-img-inner" id="heroInner">
+        <div class="hero-girl"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MARQUEE ── -->
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="mtrack">
+      <span class="mi">Art Direction <b>✦</b></span>
+      <span class="mi">Editorial Design <b>✦</b></span>
+      <span class="mi">Visual Identity <b>✦</b></span>
+      <span class="mi">Creative Consulting <b>✦</b></span>
+      <span class="mi">Fashion <b>✦</b></span>
+      <span class="mi">Culture <b>✦</b></span>
+      <span class="mi">Aesthetics <b>✦</b></span>
+      <span class="mi">Refinement <b>✦</b></span>
+      <span class="mi">Art Direction <b>✦</b></span>
+      <span class="mi">Editorial Design <b>✦</b></span>
+      <span class="mi">Visual Identity <b>✦</b></span>
+      <span class="mi">Creative Consulting <b>✦</b></span>
+      <span class="mi">Fashion <b>✦</b></span>
+      <span class="mi">Culture <b>✦</b></span>
+      <span class="mi">Aesthetics <b>✦</b></span>
+      <span class="mi">Refinement <b>✦</b></span>
+    </div>
+  </div>
+
+  <!-- ── ABOUT ── -->
+  <section class="about" id="about">
+    <div class="ab-bio">
+      <p>I'm an art director and visual storyteller working at the intersection of fashion, culture, and contemporary aesthetics. I craft visuals that resonate — refined, intentional, unforgettable.</p>
+    </div>
+    <div class="ab-services">
+      <div class="svc"><span class="svc-n">01</span><span class="svc-t">Art Direction</span><span class="svc-arrow">→</span></div>
+      <div class="svc"><span class="svc-n">02</span><span class="svc-t">Editorial Design</span><span class="svc-arrow">→</span></div>
+      <div class="svc"><span class="svc-n">03</span><span class="svc-t">Visual Identity</span><span class="svc-arrow">→</span></div>
+      <div class="svc"><span class="svc-n">04</span><span class="svc-t">Creative Consulting</span><span class="svc-arrow">→</span></div>
+    </div>
+    <div class="ab-img" id="abImg">
+      <div class="ab-img-shape"></div>
+    </div>
+  </section>
+
+
+  <!-- ── VISION ── -->
+  <section class="vision" id="editorial">
+    <div class="vision-glow" id="vglow"></div>
+    <span class="v-word"><span class="v-inner">VISION.</span></span>
+    <span class="v-word"><span class="v-inner">CRAFT.</span></span>
+    <span class="v-word"><span class="v-inner">ELEGANCE.</span></span>
+    <div class="vision-meta" id="vmeta">
+      <div class="monogram">A<span>V</span></div>
+      <div>
+        <p>BASED IN MILAN</p>
+        <p>AVAILABLE WORLDWIDE</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer id="contact">
+    <span class="fc">© 2024 ALESSANDRA VINCENTI</span>
+    <div class="fl">
+      <a href="#">INSTAGRAM</a>
+      <a href="#">LINKEDIN</a>
+      <a href="#">EMAIL</a>
+    </div>
+  </footer>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ── GRAIN CANVAS ────────────────────────────────────────
+    (function(){
+      const c = document.getElementById('grain');
+      const ctx = c.getContext('2d');
+      c.width = 250; c.height = 250;
+      c.style.cssText='position:fixed;inset:-50%;width:200%;height:200%;pointer-events:none;z-index:9997;opacity:.045;';
+      const img = ctx.createImageData(250,250);
+      for(let i=0;i<img.data.length;i+=4){
+        const v=Math.random()*255|0;
+        img.data[i]=img.data[i+1]=img.data[i+2]=v; img.data[i+3]=255;
+      }
+      ctx.putImageData(img,0,0);
+      c.style.backgroundImage=`url(${c.toDataURL()})`;
+      c.style.backgroundSize='250px 250px';
+      c.getContext('2d').clearRect(0,0,250,250);
+    })();
+
+    // ── CUSTOM CURSOR ────────────────────────────────────────
+    const cur=document.getElementById('cur'), ring=document.getElementById('ring');
+    let mx=0,my=0,rx=0,ry=0;
+    document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; gsap.to(cur,{left:mx,top:my,duration:.05}); });
+    (function raf(){ rx+=(mx-rx)*.11; ry+=(my-ry)*.11; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(raf); })();
+    document.querySelectorAll('a,button,.svc,.n-menu,.work-card').forEach(el=>{
+      el.addEventListener('mouseenter',()=>ring.classList.add('big'));
+      el.addEventListener('mouseleave',()=>ring.classList.remove('big'));
+    });
+
+    // ── PROGRESS BAR ─────────────────────────────────────────
+    window.addEventListener('scroll',()=>{
+      const p=document.getElementById('progress');
+      p.style.width=(scrollY/(document.body.scrollHeight-innerHeight)*100)+'%';
+    });
+
+    // ── LOADER ──────────────────────────────────────────────
+    const ldLogo = document.querySelector('.ld-logo span');
+    const ldbar  = document.getElementById('ldbar');
+
+    gsap.to(ldLogo,{y:'0%',duration:.9,ease:'power4.out',delay:.15});
+
+    setTimeout(()=>{ ldbar.style.width='120px'; },400);
+
+    setTimeout(()=>{
+      gsap.to('#loader',{
+        y:'-100%',
+        duration:1.1,
+        ease:'power4.inOut',
+        onComplete(){ document.getElementById('loader').style.display='none'; intro(); }
+      });
+    },1400);
+
+    // ── INTRO ANIMATION ──────────────────────────────────────
+    function intro(){
+      // nav
+      gsap.to('.n-logo',{opacity:1,duration:.7,ease:'power3.out',delay:.05});
+      gsap.to('.n-links a',{opacity:1,stagger:.07,duration:.6,ease:'power3.out',delay:.12});
+      gsap.to('.n-menu',{opacity:1,duration:.6,delay:.45});
+
+      // hero title lines
+      gsap.to('.hero-title .wd',{
+        y:'0%', stagger:.18, duration:1.15, ease:'power4.out', delay:.15
+      });
+
+      // hero subtitle + cta
+      gsap.to('.hero-sub',{opacity:1,y:0,duration:.85,ease:'power3.out',delay:.85});
+      gsap.to('.hero-cta',{opacity:1,y:0,duration:.85,ease:'power3.out',delay:1.05});
+
+      // hero image clip reveal (left to right sweep)
+      gsap.to('#heroImg',{
+        clipPath:'inset(0 0% 0 0)',
+        duration:1.4, ease:'power4.inOut', delay:.1
+      });
+
+      // scroll indicator
+      gsap.to('#scrolllabel',{opacity:1,duration:.8,delay:1.6});
+    }
+
+    // ── MOUSE PARALLAX ON HERO ───────────────────────────────
+    document.addEventListener('mousemove',e=>{
+      const px=(e.clientX/innerWidth-.5)*2;
+      const py=(e.clientY/innerHeight-.5)*2;
+      gsap.to('#heroInner',{x:px*18,y:py*12,duration:.9,ease:'power2.out'});
+    });
+
+    // ── MAGNETIC HERO CTA ────────────────────────────────────
+    const cta=document.querySelector('.hero-cta');
+    cta.addEventListener('mousemove',e=>{
+      const r=cta.getBoundingClientRect();
+      gsap.to(cta,{x:(e.clientX-r.left-r.width/2)*.35,y:(e.clientY-r.top-r.height/2)*.35,duration:.3});
+    });
+    cta.addEventListener('mouseleave',()=>{
+      gsap.to(cta,{x:0,y:0,duration:.6,ease:'elastic.out(1,.55)'});
+    });
+
+    // ── SCROLL: hide scroll label ────────────────────────────
+    ScrollTrigger.create({
+      trigger:'.hero', start:'top top', end:'15% top',
+      onUpdate:s=>gsap.to('#scrolllabel',{opacity:s.progress>.08?0:1,duration:.3})
+    });
+
+    // ── SCROLL: hero parallax ────────────────────────────────
+    gsap.to('#heroInner',{
+      y:'35%', ease:'none',
+      scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1.2}
+    });
+
+    // ── SCROLL: about bio ────────────────────────────────────
+    gsap.to('.ab-bio p',{
+      opacity:1,y:0,duration:.9,ease:'power3.out',
+      scrollTrigger:{trigger:'.ab-bio',start:'top 76%'}
+    });
+
+    // ── SCROLL: services stagger ─────────────────────────────
+    gsap.to('.svc',{
+      opacity:1,x:0,stagger:.13,duration:.75,ease:'power3.out',
+      scrollTrigger:{trigger:'.ab-services',start:'top 75%'}
+    });
+
+    // ── SCROLL: about image reveal ───────────────────────────
+    gsap.to('#abImg',{
+      clipPath:'inset(0 0 0% 0)',
+      duration:1.25, ease:'power4.inOut',
+      scrollTrigger:{trigger:'.about',start:'top 62%'}
+    });
+
+    // ── SCROLL: vision words ─────────────────────────────────
+    gsap.to('.v-inner',{
+      y:'0%',opacity:1,stagger:.22,duration:1.05,ease:'power4.out',
+      scrollTrigger:{trigger:'.vision',start:'top 62%'}
+    });
+
+    // vision parallax glow
+    gsap.to('#vglow',{
+      scale:2,ease:'none',
+      scrollTrigger:{trigger:'.vision',start:'top bottom',end:'bottom top',scrub:2}
+    });
+
+    // ── SCROLL: vision meta ──────────────────────────────────
+    gsap.to('#vmeta',{
+      opacity:1,duration:.9,ease:'power3.out',
+      scrollTrigger:{trigger:'.vision',start:'top 45%'}
+    });
+
+    // ── SCROLL: footer ───────────────────────────────────────
+    gsap.to('footer',{
+      opacity:1,y:0,duration:.8,ease:'power3.out',
+      scrollTrigger:{trigger:'footer',start:'top 90%'}
+    });
+
+    // ── SCROLL: number counter animation ─────────────────────
+    const nums=['01','02','03','04'];
+    document.querySelectorAll('.svc-n').forEach((el,i)=>{
+      ScrollTrigger.create({
+        trigger:el,
+        start:'top 80%',
+        once:true,
+        onEnter(){
+          let count=0;
+          const target=i+1;
+          const interval=setInterval(()=>{
+            count++;
+            el.textContent=String(count).padStart(2,'0');
+            if(count>=target) clearInterval(interval);
+          },60);
+        }
+      });
+    });
+
+    // ── PARALLAX: vision words on scroll ────────────────────
+    document.querySelectorAll('.v-word').forEach((w,i)=>{
+      gsap.to(w,{
+        x:(i%2===0?-1:1)*60,ease:'none',
+        scrollTrigger:{trigger:'.vision',start:'top bottom',end:'bottom top',scrub:1.5+(i*.3)}
+      });
+    });
+  </script>
+</body>
+</html>

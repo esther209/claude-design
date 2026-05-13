@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Operators Build the Future</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap');
+
+    @property --gold-pos {
+      syntax: '<percentage>';
+      initial-value: 130%;
+      inherits: false;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold: #C8854A;
+      --cream: #F0DFC0;
+      --white: #ffffff;
+      --black: #000000;
+    }
+
+    html, body {
+      height: 100%;
+      background: #000;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 700px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: url('assets/operators background 2.0.png') center center / cover no-repeat;
+      animation: slowZoom 20s ease-in-out infinite alternate;
+      transform-origin: center center;
+    }
+
+    .hero-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(0,0,0,0.72) 0%,
+        rgba(0,0,0,0.35) 55%,
+        rgba(0,0,0,0.10) 100%
+      );
+    }
+
+    @keyframes slowZoom {
+      from { transform: scale(1); }
+      to   { transform: scale(1.06); }
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 48px;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white);
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3px;
+    }
+    .logo-icon span {
+      background: var(--white);
+      display: block;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--white); }
+
+    .btn-register {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--white);
+      border: 1px solid rgba(255,255,255,0.5);
+      padding: 10px 20px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .btn-register:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--white);
+    }
+
+    /* ── Hero content ── */
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 48px 80px;
+    }
+
+    .tagline {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      animation: fadeUp 0.9s 0.3s ease both;
+    }
+    .tagline-line {
+      width: 32px;
+      height: 2px;
+      background: var(--gold);
+    }
+    .tagline p {
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.6;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(36px, 10vw, 130px);
+      font-weight: 400;
+      line-height: 0.95;
+      letter-spacing: -0.01em;
+      background: linear-gradient(
+        to bottom,
+        #F5E8CC 0%,
+        #EDD5A0 calc(var(--gold-pos) - 20%),
+        #C8854A var(--gold-pos)
+      );
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeUp 0.9s 0.5s ease both, colorReveal 2s 1.2s ease-out forwards;
+    }
+    h1 .word-future { font-style: italic; }
+
+    /* ── Footer strip ── */
+    .hero-footer {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 48px 48px;
+      animation: fadeUp 0.9s 0.8s ease both;
+    }
+
+    .meta { display: flex; flex-direction: column; gap: 18px; }
+
+    .meta-item {}
+    .meta-label {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+    .meta-value {
+      font-size: 20px;
+      font-weight: 300;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--white);
+    }
+
+    .meta-divider {
+      width: 120px;
+      height: 1px;
+      background: rgba(255,255,255,0.2);
+      margin: 4px 0;
+    }
+
+    .register-link {
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+      padding-bottom: 2px;
+      transition: border-color 0.2s, color 0.2s;
+      margin-top: 8px;
+    }
+    .register-link:hover { color: var(--gold); border-color: var(--gold); }
+
+    .sponsors {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 12px;
+    }
+    .sponsors-label {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+    }
+    .sponsor-logos {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+    .sponsor-logo {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      font-weight: 500;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sponsor-logo svg { opacity: 0.6; }
+
+    /* ── Scroll indicator ── */
+    .scroll-hint {
+      position: absolute;
+      bottom: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      animation: fadeUp 1s 1.2s ease both;
+    }
+    .scroll-hint span {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+    }
+    .scroll-dot {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.5), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; transform: scaleY(1); }
+      50%       { opacity: 1;   transform: scaleY(1.15); }
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes colorReveal {
+      from { --gold-pos: 130%; }
+      to   { --gold-pos: 65%; }
+    }
+
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      nav { padding: 20px 24px; }
+      .nav-links { display: none; }
+      .hero-content { padding: 0 24px 60px; }
+      .hero-footer { flex-direction: column; align-items: flex-start; gap: 28px; padding: 0 24px 32px; }
+      .sponsors { align-items: flex-start; }
+    }
+    @media (max-width: 480px) {
+      h1 { font-size: clamp(32px, 9vw, 64px); }
+    }
+  </style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+
+  <!-- Nav -->
+  <nav>
+    <a class="nav-logo" href="#">
+      <div class="logo-icon">
+        <span></span><span></span>
+        <span></span><span></span>
+      </div>
+      Workshop
+    </a>
+
+    <ul class="nav-links">
+      <li><a href="#">Overview</a></li>
+      <li><a href="#">Agenda</a></li>
+      <li><a href="#">Speakers</a></li>
+      <li><a href="#">Venue</a></li>
+    </ul>
+
+    <a class="btn-register" href="#">Register ↗</a>
+  </nav>
+
+  <!-- Main copy -->
+  <div class="hero-content">
+    <div class="tagline">
+      <div class="tagline-line"></div>
+      <p>A workshop for builders,<br>doers, and system thinkers.</p>
+    </div>
+
+    <h1>
+      <span class="word-operators">Operators</span><br>
+      <span class="word-build">build the</span><br>
+      <span class="word-future">future</span>
+    </h1>
+  </div>
+
+  <!-- Footer strip -->
+  <div class="hero-footer">
+    <div class="meta">
+      <div class="meta-item">
+        <div class="meta-label">Date</div>
+        <div class="meta-value">June 20–21, 2025</div>
+      </div>
+      <div class="meta-divider"></div>
+      <div class="meta-item">
+        <div class="meta-label">Location</div>
+        <div class="meta-value">Austin, Texas</div>
+      </div>
+      <a class="register-link" href="#">Register Now ↗</a>
+    </div>
+
+    <div class="sponsors">
+      <div class="sponsors-label">Presented by</div>
+      <div class="sponsor-logos">
+        <div class="sponsor-logo">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="white"><rect width="16" height="2" rx="1"/><rect y="5" width="12" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg>
+          Founders Fund
+        </div>
+        <div class="sponsor-logo">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="white"><rect width="14" height="14" rx="3" fill="white" fill-opacity="0.15"/><rect x="3" y="3" width="8" height="8" rx="1" fill="white"/></svg>
+          Notion
+        </div>
+        <div class="sponsor-logo">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><polygon points="7,0 14,14 0,14" fill="white" fill-opacity="0.8"/></svg>
+          Vercel
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-dot"></div>
+  </div>
+</section>
+
+</body>
+</html>

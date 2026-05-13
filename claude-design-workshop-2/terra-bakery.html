@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terra. Artisan Bakery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      height: 100vh;
+      overflow: hidden;
+      background: #2b1700;
+      color: #f5ede0;
+    }
+
+    /* ── Video background ── */
+    .video-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    .video-bg video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .video-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(
+        120deg,
+        rgba(22, 10, 2, 0.78) 0%,
+        rgba(55, 28, 6, 0.45) 55%,
+        rgba(15, 7, 1, 0.65) 100%
+      );
+    }
+
+    /* ── Page shell ── */
+    .page {
+      position: relative;
+      z-index: 2;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 0 56px;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-top: 38px;
+      opacity: 0;
+      animation: slideDown 1s ease forwards 0.2s;
+    }
+
+    .logo-name {
+      font-family: 'Georgia', serif;
+      font-size: 21px;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+    }
+
+    .logo-sub {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 8.5px;
+      letter-spacing: 0.38em;
+      color: rgba(245, 237, 224, 0.58);
+      margin-top: 3px;
+      text-transform: uppercase;
+    }
+
+    nav {
+      display: flex;
+      gap: 42px;
+      align-items: center;
+      padding-top: 4px;
+    }
+
+    nav a {
+      text-decoration: none;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 10.5px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245, 237, 224, 0.8);
+      transition: color 0.25s;
+    }
+
+    nav a:hover { color: #f5ede0; }
+
+    /* ── Hero ── */
+    .hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-bottom: 30px;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(50px, 6.5vw, 84px);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.06;
+      letter-spacing: -0.01em;
+      color: #f5ede0;
+      max-width: 480px;
+      margin-bottom: 26px;
+      opacity: 0;
+      animation: slideUp 1.2s ease forwards 0.7s;
+    }
+
+    .hero p {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 12.5px;
+      line-height: 1.75;
+      color: rgba(245, 237, 224, 0.7);
+      max-width: 270px;
+      font-weight: 300;
+      margin-bottom: 52px;
+      opacity: 0;
+      animation: slideUp 1.2s ease forwards 1s;
+    }
+
+    .cta {
+      display: inline-block;
+      text-decoration: none;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 10.5px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: #f5ede0;
+      padding-bottom: 9px;
+      border-bottom: 1px solid rgba(245, 237, 224, 0.5);
+      width: fit-content;
+      opacity: 0;
+      animation: slideUp 1.2s ease forwards 1.3s;
+      transition: letter-spacing 0.35s ease, border-color 0.3s;
+    }
+
+    .cta:hover {
+      letter-spacing: 0.38em;
+      border-color: #f5ede0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 38px;
+      opacity: 0;
+      animation: fadeIn 1s ease forwards 1.8s;
+    }
+
+    .social {
+      display: flex;
+      gap: 30px;
+    }
+
+    .social a {
+      text-decoration: none;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 9.5px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245, 237, 224, 0.55);
+      transition: color 0.25s;
+    }
+
+    .social a:hover { color: #f5ede0; }
+
+    .tagline {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 9.5px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: rgba(245, 237, 224, 0.42);
+    }
+
+    /* ── Grain texture overlay ── */
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      opacity: 0.045;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 160px;
+    }
+
+    /* ── Keyframes ── */
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="video-bg">
+    <video autoplay muted loop playsinline preload="none">
+      <source src="assets/make_the_bread_202604281347.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="video-overlay"></div>
+  <div class="grain"></div>
+
+  <div class="page">
+
+    <header>
+      <div>
+        <div class="logo-name">TERRA.</div>
+        <div class="logo-sub">Artisan Bakery</div>
+      </div>
+      <nav>
+        <a href="#">Shop</a>
+        <a href="#">Journal</a>
+        <a href="#">About</a>
+        <a href="#">Contact</a>
+        <a href="#">Cart &thinsp;( 0 )</a>
+      </nav>
+    </header>
+
+    <main class="hero">
+      <h1>Good things<br>take time.</h1>
+      <p>We make bread the old way — with natural<br>ingredients, long fermentation and a deep<br>respect for the craft.</p>
+      <a href="#" class="cta">Shop Bread</a>
+    </main>
+
+    <footer>
+      <div class="social">
+        <a href="#">Instagram</a>
+        <a href="#">Pinterest</a>
+        <a href="#">Email</a>
+      </div>
+      <span class="tagline">Slow baked in small batches.</span>
+    </footer>
+
+  </div>
+
+</body>
+</html>

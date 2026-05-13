@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CarePlus — Health, reimagined.</title>
+<meta name="description" content="Compassionate care. Advanced medicine. Better outcomes. Built around you.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,ital,wght@9..144,0,300..500;9..144,1,300..500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f4eee5;
+    --paper-2:#ece4d6;
+    --paper-3:#ddd2bf;
+    --ink:#1d1916;
+    --ink-soft:rgba(29,25,22,.62);
+    --ink-faint:rgba(29,25,22,.42);
+    --hairline:rgba(29,25,22,.14);
+    --hairline-2:rgba(29,25,22,.08);
+    --olive:oklch(0.55 0.04 110);
+    --shadow-warm:rgba(190,150,100,.14);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'Inter',-apple-system,system-ui,sans-serif;
+    color:var(--ink);
+    background:var(--paper);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+    font-size:14px;
+  }
+  ::selection{background:var(--ink);color:var(--paper)}
+  .serif{font-family:'Fraunces',Georgia,serif;font-weight:300;letter-spacing:-.022em;font-variation-settings:'opsz' 144}
+  .serif-it{font-family:'Fraunces',Georgia,serif;font-style:italic;font-weight:300;letter-spacing:-.025em;font-variation-settings:'opsz' 144}
+
+  /* ============ REVEAL PRIMITIVES ============ */
+  .r{opacity:0;transform:translateY(18px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1s cubic-bezier(.2,.7,.2,1)}
+  .r.in{opacity:1;transform:none}
+  .r.d1{transition-delay:.08s}.r.d2{transition-delay:.16s}.r.d3{transition-delay:.24s}
+  .r.d4{transition-delay:.32s}.r.d5{transition-delay:.40s}.r.d6{transition-delay:.48s}
+  .r.d7{transition-delay:.56s}.r.d8{transition-delay:.64s}
+
+  /* per-character reveal for headline */
+  .split{display:inline-block}
+  .split .ch{display:inline-block;opacity:0;transform:translateY(.5em) rotate(2deg);transition:opacity .9s cubic-bezier(.2,.7,.15,1),transform 1.05s cubic-bezier(.2,.7,.15,1);will-change:transform,opacity}
+  .play .split .ch{opacity:1;transform:none}
+
+  /* ============ NAV ============ */
+  .nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    padding:22px 36px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;
+    transition:padding .4s cubic-bezier(.2,.7,.2,1),background .4s ease,backdrop-filter .4s ease,border-color .4s;
+    border-bottom:1px solid transparent;
+  }
+  .nav.scrolled{padding:14px 36px;background:rgba(244,238,229,.78);backdrop-filter:saturate(140%) blur(14px);-webkit-backdrop-filter:saturate(140%) blur(14px);border-bottom-color:var(--hairline-2)}
+  .brand{font-family:'Fraunces',serif;font-weight:400;font-size:24px;letter-spacing:-.01em;display:flex;align-items:center;gap:2px}
+  .brand .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--olive);margin-left:6px;transform:translateY(-10px);animation:brandDot 4s ease-in-out infinite}
+  @keyframes brandDot{0%,100%{transform:translateY(-10px)}50%{transform:translateY(-12px)}}
+  .nav-links{display:flex;gap:32px;align-items:center}
+  .nav-links a{position:relative;color:var(--ink);text-decoration:none;font-size:13px;font-weight:400;opacity:.78;transition:opacity .3s}
+  .nav-links a:hover{opacity:1}
+  .nav-links a::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+  .nav-links a:hover::after{transform:scaleX(1)}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:400;text-decoration:none;
+    transition:all .4s cubic-bezier(.2,.7,.2,1);cursor:pointer;border:none;
+    position:relative;overflow:hidden;
+  }
+  .btn-pill{padding:11px 18px;border-radius:999px;background:transparent;color:var(--ink);border:1px solid rgba(29,25,22,.5)}
+  .btn-pill:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .btn-dark{padding:14px 22px;border-radius:999px;background:#0e0c0a;color:#f4eee5;font-weight:400}
+  .btn-dark::before{content:"";position:absolute;inset:0;background:radial-gradient(120px circle at var(--mx,50%) var(--my,50%),rgba(255,236,200,.25),transparent 60%);opacity:0;transition:opacity .4s}
+  .btn-dark:hover::before{opacity:1}
+  .btn-dark:hover{transform:translateY(-1px)}
+  .btn .arr{display:inline-block;transition:transform .4s cubic-bezier(.2,.7,.2,1)}
+  .btn:hover .arr{transform:translate(3px,-3px)}
+  .lnk{display:inline-flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none;font-size:13px;font-weight:400;transition:gap .3s,letter-spacing .3s}
+  .about-content .lnk{align-self:flex-start;margin-top:36px}
+  .lnk .lnk-text{border-bottom:1px solid var(--ink);padding-bottom:2px;display:inline-block;transition:letter-spacing .3s}
+  .lnk:hover{gap:14px}
+  .lnk:hover .lnk-text{letter-spacing:.04em}
+  .lnk .arr{display:inline-block;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
+  .lnk:hover .arr{transform:translate(3px,-3px)}
+
+  @media (max-width:880px){.nav-links{display:none}}
+
+  /* ============ HERO ============ */
+  .hero-wrap{padding:0;margin:0;max-width:none}
+  .hero{
+    position:relative;overflow:hidden;
+    height:100vh;min-height:680px;
+    background:var(--paper);
+    isolation:isolate;
+  }
+
+  /* Layer 1: photo */
+  .hero-bg{
+    position:absolute;inset:0;z-index:0;
+    background:url('../assets/cp-hero.png') no-repeat;
+    /* Frame on the right side so the doctor + grandma are clearly in view; copy sits over
+       the empty wall on the left. */
+    background-size:cover;
+    background-position:88% center;
+    transform:scale(1.05);
+    transition:transform 1.6s cubic-bezier(.2,.7,.2,1);
+    will-change:transform;
+  }
+  @media (min-width:1400px){
+    .hero-bg{ background-size:115% auto; background-position:78% 50%; }
+  }
+  @media (max-width:880px){
+    .hero-bg{ background-size:auto 92%; background-position:72% 70%; }
+  }
+  .hero.play .hero-bg{animation:slowZoom 28s ease-in-out 1.5s infinite alternate}
+  @keyframes slowZoom{
+    0%{transform:scale(1.04) translate3d(0,0,0)}
+    100%{transform:scale(1.10) translate3d(-1%,-.4%,0)}
+  }
+  /* initial cinematic in: zoom from 1.15 to 1.04 */
+  .hero-bg{transform:scale(1.12)}
+  .hero.play .hero-bg{transform:scale(1.0)}
+
+  /* Layer 2: leaf shadow drift on top of photo, multiply blend */
+  .hero-shadows{
+    position:absolute;inset:-6%;z-index:1;
+    background:url('../assets/cp-shadows.png') center / cover no-repeat;
+    mix-blend-mode:multiply;
+    opacity:.0;
+    transform:scale(1.1) translate(0,0);
+    transition:opacity 2.2s ease 1s;
+    will-change:transform;
+    pointer-events:none;
+  }
+  .hero.play .hero-shadows{opacity:.32;animation:shadowDrift 22s ease-in-out 1s infinite alternate}
+  @keyframes shadowDrift{
+    0%{transform:scale(1.1) translate3d(0,0,0)}
+    100%{transform:scale(1.14) translate3d(2%,1.2%,0)}
+  }
+
+  /* Layer 3: cream wash — fades photo into page; clears right where the subjects are */
+  .hero-wash{
+    position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:
+      linear-gradient(90deg,
+        rgba(244,238,229,.98) 0%,
+        rgba(244,238,229,.88) 18%,
+        rgba(244,238,229,.45) 38%,
+        rgba(244,238,229,.05) 58%,
+        rgba(244,238,229,0) 75%,
+        rgba(244,238,229,0) 100%),
+      linear-gradient(180deg,
+        rgba(244,238,229,.4) 0%,
+        rgba(244,238,229,0) 12%,
+        rgba(244,238,229,0) 75%,
+        rgba(244,238,229,.7) 94%,
+        rgba(244,238,229,1) 100%);
+  }
+
+  /* Layer 4: glow bloom from skylight */
+  .hero-bloom{
+    position:absolute;top:-18%;right:-4%;width:55%;aspect-ratio:1;z-index:2;
+    background:radial-gradient(circle at 38% 35%, rgba(255,246,224,.7), rgba(255,246,224,0) 60%);
+    pointer-events:none;mix-blend-mode:screen;
+    animation:bloom 16s ease-in-out infinite alternate;
+  }
+  @keyframes bloom{
+    0%{transform:translate(0,0) scale(1)}
+    100%{transform:translate(-3%,2%) scale(1.06)}
+  }
+
+  /* Layer 5: grain */
+  .hero-grain{
+    position:absolute;inset:0;z-index:3;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/></svg>");
+  }
+
+  /* Layer 6: subtle hairline frame */
+  .hero::after{display:none}
+
+  .hero-inner{
+    position:relative;z-index:5;height:100%;
+    max-width:1280px;margin:0 auto;padding:0 56px;
+    display:flex;align-items:center;
+  }
+  .hero-copy{
+    max-width:600px;padding-top:80px;
+  }
+  .hero-eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    margin-bottom:30px;
+    color:var(--ink-soft);font-size:11px;letter-spacing:.22em;text-transform:uppercase;font-weight:500;
+  }
+  .hero-eyebrow .pulse{
+    width:6px;height:6px;border-radius:50%;background:var(--olive);
+    box-shadow:0 0 0 0 rgba(120,120,90,.45);
+    animation:pulse 2.4s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(120,120,90,.5)}
+    70%{box-shadow:0 0 0 14px rgba(120,120,90,0)}
+    100%{box-shadow:0 0 0 0 rgba(120,120,90,0)}
+  }
+  .hero h1{
+    font-family:'Fraunces',serif;
+    font-weight:300;
+    font-size:clamp(64px,9vw,128px);
+    line-height:.92;
+    letter-spacing:-.04em;
+    margin-bottom:32px;
+    white-space:nowrap;
+  }
+  .hero h1 .l1{display:block}
+  .hero h1 .l2{display:block;font-style:italic;font-weight:300;letter-spacing:-.045em;padding-left:.5em;margin-top:.02em}
+  @media (max-width:1100px){.hero h1{font-size:clamp(56px,8vw,96px)}}
+  .hero h1 .l2 .ch{transition-delay:calc(var(--i) * 35ms + 200ms)}
+  .hero h1 .l1 .ch{transition-delay:calc(var(--i) * 30ms + 50ms)}
+  .hero-sub{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:300;
+    font-size:19px;line-height:1.5;color:var(--ink-soft);
+    margin-bottom:36px;max-width:380px;
+  }
+  .hero-cta{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+
+  @media (max-width:880px){
+    .hero{height:auto;min-height:640px}
+    .hero-inner{padding:0 28px}
+    .hero-copy{padding:120px 0 80px}
+    .hero h1{font-size:60px;white-space:normal}
+    .hero-wash{background:linear-gradient(180deg,rgba(244,238,229,.96) 0%,rgba(244,238,229,.55) 38%,rgba(244,238,229,.05) 60%,rgba(244,238,229,.85) 95%)}
+  }
+
+  /* hero scroll indicator */
+  .scroll-cue{
+    position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+    z-index:5;display:flex;align-items:center;gap:10px;
+    color:var(--ink-soft);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    opacity:.7;
+  }
+  .scroll-cue .line{width:1px;height:32px;background:var(--ink-soft);position:relative;overflow:hidden}
+  .scroll-cue .line::after{content:"";position:absolute;top:-100%;left:0;right:0;height:60%;background:var(--ink);animation:scrollLine 2.4s cubic-bezier(.5,0,.3,1) infinite}
+  @keyframes scrollLine{0%{top:-100%}55%,100%{top:160%}}
+
+  /* ============ LOGO MARQUEE (trusted-by strip) ============ */
+  .marq-section{
+    position:relative;margin:0;padding:32px 0 36px;
+    overflow:hidden;
+    background:#1d1916;color:var(--paper);
+    isolation:isolate;
+  }
+  .marq-section::before{
+    content:"";position:absolute;inset:0;z-index:0;
+    background:url('../assets/cp-shadows.png') center / cover no-repeat;
+    mix-blend-mode:screen;opacity:.12;
+    animation:shadowDrift 28s ease-in-out infinite alternate;
+  }
+  .marq-section::after{
+    content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+    background:linear-gradient(90deg,rgba(29,25,22,1),rgba(29,25,22,0) 8%,rgba(29,25,22,0) 92%,rgba(29,25,22,1));
+  }
+
+  .logos-eyebrow{
+    position:relative;z-index:2;
+    text-align:center;
+    margin:0 auto 36px;
+    font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+    color:rgba(244,238,229,.5);font-weight:500;
+    display:inline-flex;align-items:center;gap:14px;justify-content:center;
+    width:100%;
+  }
+  .logos-eyebrow::before, .logos-eyebrow::after{
+    content:"";flex:0 0 56px;height:1px;background:rgba(244,238,229,.18);
+  }
+
+  .marq{
+    overflow:hidden;position:relative;z-index:1;padding:8px 0;
+    mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%);
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 8%,#000 92%,transparent 100%);
+  }
+  .marq:hover .marq-track{animation-play-state:paused}
+  .marq-track{
+    display:flex;gap:0;align-items:center;
+    animation:marq 60s linear infinite;
+    width:max-content;white-space:nowrap;
+  }
+  /* Each logo: text-as-logo with subtle vertical rule between. */
+  .logo-item{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:0 56px;
+    color:rgba(244,238,229,.78);
+    font-family:'Fraunces',serif;font-weight:400;font-size:22px;
+    letter-spacing:-.005em;
+    transition:color .3s ease, opacity .3s ease;
+    opacity:.72;
+  }
+  .logo-item:hover{ color:var(--paper); opacity:1; }
+  .logo-item .lm{
+    font-family:'Fraunces',serif;font-style:italic;font-weight:300;
+    margin-right:2px;font-size:24px;line-height:1;
+  }
+  .logo-item .lm.sm{font-size:18px}
+  .logo-item .acro{
+    font-family:'JetBrains Mono',monospace;
+    font-size:14px;letter-spacing:.18em;font-weight:500;text-transform:uppercase;
+  }
+  .logo-item .stack{display:inline-flex;flex-direction:column;line-height:1;gap:2px}
+  .logo-item .stack .lo-1{font-size:18px;font-family:'Fraunces',serif;letter-spacing:-.01em}
+  .logo-item .stack .lo-2{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:rgba(244,238,229,.45);font-family:'JetBrains Mono',monospace;font-weight:500}
+  .logo-item .dot{width:6px;height:6px;border-radius:50%;background:rgba(244,238,229,.5)}
+  /* Soft hairline between logos (not on first/last clones). */
+  .logo-item + .logo-item{ border-left:1px solid rgba(244,238,229,.10); }
+  @keyframes marq{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+  /* ============ SERVICES ============ */
+  .services{padding:120px 28px 90px;max-width:1180px;margin:0 auto}
+  .services-eyebrow{
+    text-align:center;margin-bottom:18px;font-size:11px;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--ink-soft);font-weight:500;
+  }
+  .services h2{
+    text-align:center;font-family:'Fraunces',serif;font-weight:300;
+    font-size:clamp(34px,4.4vw,52px);letter-spacing:-.022em;line-height:1.05;
+    margin-bottom:80px;color:var(--ink);max-width:780px;margin-left:auto;margin-right:auto;
+  }
+  .services h2 i{font-style:italic}
+  .svc-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);
+    gap:1px;background:var(--hairline);
+    border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);
+  }
+  .svc{
+    padding:48px 28px 40px;
+    text-align:center;
+    position:relative;
+    cursor:pointer;
+    text-decoration:none;color:inherit;
+    background:var(--paper);
+    transition:background .5s ease;
+    overflow:hidden;
+  }
+  .svc::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%),rgba(190,150,100,.12),transparent 60%);
+    opacity:0;transition:opacity .4s ease;pointer-events:none;
+  }
+  .svc:hover::before{opacity:1}
+  .svc-ic{
+    width:54px;height:54px;border-radius:50%;border:1px solid var(--hairline);
+    display:grid;place-items:center;margin:0 auto 22px;
+    transition:transform .55s cubic-bezier(.2,.7,.2,1),border-color .4s,background .4s;
+    position:relative;
+  }
+  .svc:hover .svc-ic{transform:translateY(-4px) scale(1.05);border-color:var(--ink);background:var(--ink)}
+  .svc:hover .svc-ic svg{stroke:var(--paper)}
+  .svc-ic svg{stroke:var(--ink);stroke-width:1.4;fill:none;transition:stroke .4s}
+  .svc h3{font-family:'Fraunces',serif;font-weight:400;font-size:20px;letter-spacing:-.005em;margin-bottom:12px;position:relative}
+  .svc p{font-size:13px;line-height:1.55;color:var(--ink-soft);max-width:180px;margin:0 auto 20px;position:relative}
+  .svc-arr{
+    display:inline-block;color:var(--ink);font-size:18px;
+    transition:transform .4s cubic-bezier(.2,.7,.2,1);position:relative;
+  }
+  .svc:hover .svc-arr{transform:translateX(6px)}
+
+  @media (max-width:880px){.svc-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:540px){.svc-grid{grid-template-columns:1fr}}
+
+  /* ============ ABOUT (large lobby) ============ */
+  .about{padding:120px 0 130px;position:relative}
+  .about-grid{
+    display:grid;grid-template-columns:50vw 1fr;gap:0;align-items:stretch;min-height:80vh;
+  }
+  .about-img{
+    position:relative;overflow:hidden;
+    background:var(--paper);
+    margin:18px 0 18px 18px;
+    border-radius:18px;
+    min-height:calc(80vh - 36px);
+  }
+  .about-img .img{
+    position:absolute;inset:0;
+    background:url('../assets/cp-lobby.png') no-repeat;
+    /* Cover the entire panel so no container background shows; framed on the wall logo. */
+    background-size:cover;
+    background-position:72% 42%;
+    transform:scale(1.04);
+    transition:transform 2.4s cubic-bezier(.2,.7,.2,1);
+    will-change:transform;
+  }
+  .about-img.in .img{transform:scale(1.0)}
+  .about-img::after{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(90deg,rgba(244,238,229,0) 78%,rgba(244,238,229,.6) 100%);
+    pointer-events:none;
+  }
+  .about-img .shutter{
+    position:absolute;inset:0;background:var(--paper);z-index:2;
+    transform:translateX(0);
+    transition:transform 1.4s cubic-bezier(.65,0,.25,1);
+  }
+  .about-img.in .shutter{transform:translateX(101%)}
+  .about-img .floating-tag{
+    position:absolute;bottom:36px;left:36px;z-index:3;
+    background:rgba(244,238,229,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+    padding:14px 20px;border-radius:999px;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);font-weight:500;
+    display:inline-flex;align-items:center;gap:10px;
+    box-shadow:0 12px 30px -12px rgba(60,40,20,.25);
+  }
+  .about-img .floating-tag .d{width:6px;height:6px;border-radius:50%;background:var(--olive);animation:pulse 2.4s ease-out infinite}
+
+  .about-content{max-width:480px;padding:0 56px;display:flex;flex-direction:column;justify-content:center}
+
+  @media (max-width:980px){
+    .about-grid{grid-template-columns:1fr;min-height:auto}
+    .about-img{min-height:520px;border-radius:18px;margin:0 28px}
+    .about-content{padding:48px 28px 0;max-width:none}
+  }
+  .about-eyebrow{
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--ink-soft);margin-bottom:28px;font-weight:500;
+  }
+  .about h2{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(40px,5vw,60px);line-height:1.04;letter-spacing:-.028em;margin-bottom:32px}
+  .about h2 .l1{display:block}
+  .about h2 .l2{display:block;font-style:italic;margin-top:.06em}
+  .about p.lede{font-size:15px;line-height:1.65;color:var(--ink-soft);margin-bottom:48px;max-width:400px}
+  .stats{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-bottom:0;
+    border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);
+    padding:32px 0;
+  }
+  .about-content .lnk{align-self:flex-start;margin-top:40px}
+  .stat{
+    padding:4px 28px;
+    border-right:1px solid var(--hairline);
+    display:flex;flex-direction:column;justify-content:center;
+    min-width:0;
+  }
+  .stat:first-child{padding-left:0}
+  .stat:last-child{padding-right:0;border-right:none}
+  .stat .num{
+    font-family:'Fraunces',serif;font-weight:300;
+    font-size:38px;letter-spacing:-.02em;line-height:1;
+    margin-bottom:10px;color:var(--ink);
+  }
+  .stat .lbl{
+    font-size:11px;color:var(--ink-soft);letter-spacing:.06em;
+    text-transform:uppercase;line-height:1.35;
+  }
+
+  @media (max-width:880px){
+    .about-grid{grid-template-columns:1fr;gap:0}
+  }
+
+  /* ============ CTA STRIP ============ */
+  .cta-wrap{padding:0 28px;max-width:1180px;margin:0 auto 90px}
+  .cta-strip{
+    border-radius:14px;padding:54px 56px;
+    display:grid;grid-template-columns:1.2fr 1fr auto;gap:40px;align-items:center;
+    position:relative;overflow:hidden;
+    background:#1d1916;color:var(--paper);
+    isolation:isolate;
+  }
+  .cta-strip::before{
+    content:"";position:absolute;inset:0;z-index:0;
+    background:url('../assets/cp-shadows.png') center / cover no-repeat;
+    mix-blend-mode:screen;opacity:.18;
+    animation:shadowDrift 24s ease-in-out infinite alternate;
+  }
+  .cta-strip::after{
+    content:"";position:absolute;inset:0;z-index:0;
+    background:radial-gradient(120% 140% at 100% 0%,rgba(255,236,200,.22),transparent 60%);
+    pointer-events:none;
+  }
+  .cta-strip > *{position:relative;z-index:1}
+  .cta-strip h3{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(28px,3.4vw,40px);letter-spacing:-.025em;line-height:1.05}
+  .cta-strip h3 .l2{display:block;font-style:italic}
+  .cta-strip .sub{font-size:13px;color:rgba(244,238,229,.6);max-width:280px;line-height:1.6}
+  .cta-strip .btn-light{padding:14px 22px;border-radius:999px;background:var(--paper);color:var(--ink);font-weight:500;font-size:13px}
+  .cta-strip .btn-light:hover{transform:translateY(-1px)}
+
+  @media (max-width:880px){.cta-strip{grid-template-columns:1fr;padding:36px;gap:22px}}
+
+  /* ============ FOOTER (compact) ============ */
+  footer{padding:0 28px 24px;max-width:1180px;margin:0 auto}
+  .foot-grid{
+    display:flex;justify-content:space-between;align-items:flex-start;gap:48px;flex-wrap:wrap;
+    padding:40px 0 28px;border-top:1px solid var(--hairline);
+  }
+  .foot-brand{max-width:340px}
+  .foot-brand .brand{display:inline-flex;margin-bottom:10px;font-size:20px}
+  .foot-brand p{font-size:13px;color:var(--ink-soft);line-height:1.55;margin-bottom:14px}
+  .foot-soc{display:flex;gap:14px;font-size:12px}
+  .foot-soc a{color:var(--ink-soft);text-decoration:none;transition:color .3s}
+  .foot-soc a:hover{color:var(--ink)}
+  .foot-links{display:flex;gap:36px;flex-wrap:wrap}
+  .foot-links a{font-size:13px;color:var(--ink-soft);text-decoration:none;transition:color .25s}
+  .foot-links a:hover{color:var(--ink)}
+  .foot-contact{font-size:13px;color:var(--ink-soft);line-height:1.6;text-align:right}
+  .foot-contact a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:1px}
+  .foot-bar{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 0;border-top:1px solid var(--hairline);font-size:11px;color:var(--ink-faint);
+  }
+  .foot-bar .links{display:flex;gap:22px}
+  .foot-bar a{color:var(--ink-faint);text-decoration:none;transition:color .25s}
+  .foot-bar a:hover{color:var(--ink)}
+
+  @media (max-width:780px){
+    .foot-grid{flex-direction:column;gap:24px}
+    .foot-contact{text-align:left}
+  }
+
+  *:focus-visible{outline:2px solid var(--olive);outline-offset:3px;border-radius:4px}
+
+  /* respect reduced motion */
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:opacity .3s !important}
+    .r,.split .ch{opacity:1 !important;transform:none !important}
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav" id="nav">
+    <div class="brand serif">CarePlus<span class="dot"></span></div>
+    <div class="nav-links">
+      <a href="#services">Services</a>
+      <a href="#about">About Us</a>
+      <a href="#doctors">Our Doctors</a>
+      <a href="#resources">Resources</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <a href="#book" class="btn btn-pill">Book Appointment <span class="arr">↗</span></a>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero-wrap">
+    <div class="hero" id="hero">
+      <div class="hero-bg" id="heroBg"></div>
+      <div class="hero-shadows" id="heroShadows"></div>
+      <div class="hero-bloom"></div>
+      <div class="hero-wash"></div>
+      <div class="hero-grain"></div>
+      <div class="hero-inner">
+      <div class="hero-copy">
+        <div class="hero-eyebrow r"><span class="pulse"></span><span>Welcoming new patients</span></div>
+        <h1>
+          <span class="l1"><span class="split" data-text="Health,"></span></span>
+          <span class="l2"><span class="split" data-text="reimagined."></span></span>
+        </h1>
+        <p class="hero-sub r d4">Compassionate care. Advanced medicine.<br>Better outcomes. Built around you.</p>
+        <div class="hero-cta r d5">
+          <a href="#book" class="btn btn-dark" id="ctaMagnet">Book Appointment <span class="arr">↗</span></a>
+          <a href="#about" class="lnk"><span class="lnk-text">Learn More</span> <span class="arr">↗</span></a>
+        </div>
+      </div>
+      </div>
+      <div class="scroll-cue r d6"><span class="line"></span></div>
+    </div>
+  </header>
+
+  <!-- TRUSTED-BY LOGO MARQUEE -->
+  <section class="marq-section">
+    <div class="logos-eyebrow"><span>Trusted &amp; accredited by</span></div>
+    <div class="marq">
+      <div class="marq-track">
+        <span class="logo-item"><span class="lm">±</span>BlueRidge Health</span>
+        <span class="logo-item"><span class="acro">NCQA</span><span class="dot"></span><span class="stack"><span class="lo-1">Accredited</span><span class="lo-2">Patient-centered</span></span></span>
+        <span class="logo-item"><span class="lm sm">◆</span>Meridian Mutual</span>
+        <span class="logo-item">United <em style="font-style:italic;font-weight:300;margin:0 4px">+</em> Wellness</span>
+        <span class="logo-item"><span class="acro">JCAHO</span><span class="stack" style="margin-left:8px"><span class="lo-1">Joint Commission</span><span class="lo-2">Gold Seal · 2024</span></span></span>
+        <span class="logo-item"><span class="lm">♁</span>Ovela Network</span>
+        <span class="logo-item">Solene <span style="font-style:italic;color:rgba(244,238,229,.5)">Care</span></span>
+        <span class="logo-item"><span class="acro">AAAHC</span></span>
+        <span class="logo-item"><span class="lm sm">◇</span>North Star Mutual</span>
+        <span class="logo-item">Atrium <span style="font-weight:300;letter-spacing:.04em">Health Group</span></span>
+        <!-- duplicate set for seamless loop -->
+        <span class="logo-item"><span class="lm">±</span>BlueRidge Health</span>
+        <span class="logo-item"><span class="acro">NCQA</span><span class="dot"></span><span class="stack"><span class="lo-1">Accredited</span><span class="lo-2">Patient-centered</span></span></span>
+        <span class="logo-item"><span class="lm sm">◆</span>Meridian Mutual</span>
+        <span class="logo-item">United <em style="font-style:italic;font-weight:300;margin:0 4px">+</em> Wellness</span>
+        <span class="logo-item"><span class="acro">JCAHO</span><span class="stack" style="margin-left:8px"><span class="lo-1">Joint Commission</span><span class="lo-2">Gold Seal · 2024</span></span></span>
+        <span class="logo-item"><span class="lm">♁</span>Ovela Network</span>
+        <span class="logo-item">Solene <span style="font-style:italic;color:rgba(244,238,229,.5)">Care</span></span>
+        <span class="logo-item"><span class="acro">AAAHC</span></span>
+        <span class="logo-item"><span class="lm sm">◇</span>North Star Mutual</span>
+        <span class="logo-item">Atrium <span style="font-weight:300;letter-spacing:.04em">Health Group</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <div class="services-eyebrow r">What we do</div>
+    <h2 class="r d1">Comprehensive care for you<br>and <i>your family.</i></h2>
+    <div class="svc-grid">
+      <a class="svc r d1" href="#" data-tilt>
+        <div class="svc-ic">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3>Primary Care</h3>
+        <p>Building long-term relationships for better health.</p>
+        <span class="svc-arr">→</span>
+      </a>
+      <a class="svc r d2" href="#" data-tilt>
+        <div class="svc-ic">
+          <svg width="22" height="22" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <h3>Specialty Services</h3>
+        <p>Expert care across a wide range of specialties.</p>
+        <span class="svc-arr">→</span>
+      </a>
+      <a class="svc r d3" href="#" data-tilt>
+        <div class="svc-ic">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Preventive Care</h3>
+        <p>Stay ahead with screenings and wellness programs.</p>
+        <span class="svc-arr">→</span>
+      </a>
+      <a class="svc r d4" href="#" data-tilt>
+        <div class="svc-ic">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3>Patient Support</h3>
+        <p>Support every step of the way.</p>
+        <span class="svc-arr">→</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="about-grid">
+      <div class="about-img r" id="aboutImg">
+        <div class="img"></div>
+        <div class="shutter"></div>
+        <div class="floating-tag"><span class="d"></span><span>Wellness City Flagship</span></div>
+      </div>
+      <div class="about-content">
+        <div class="about-eyebrow r">ABOUT US</div>
+        <h2 class="r d1"><span class="l1">Better care.</span><span class="l2">Every day.</span></h2>
+        <p class="lede r d2">At CarePlus, we combine advanced technology with compassionate professionals to deliver exceptional care close to home.</p>
+        <div class="stats r d3">
+          <div class="stat"><div class="num" data-count="15" data-suffix="K+">12K+</div><div class="lbl">Patients Served</div></div>
+          <div class="stat"><div class="num" data-count="200" data-suffix="+">170+</div><div class="lbl">Expert Doctors</div></div>
+          <div class="stat"><div class="num" data-count="98" data-suffix="%">83%</div><div class="lbl">Patient Satisfaction</div></div>
+        </div>
+        <a href="#about" class="lnk r d4"><span class="lnk-text">Learn more about us</span> <span class="arr">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA STRIP -->
+  <div class="cta-wrap">
+    <div class="cta-strip r">
+      <h3><span class="l1">Your health journey</span><span class="l2">starts here.</span></h3>
+      <p class="sub">Schedule an appointment and experience the CarePlus difference. Your wellbeing is our priority.</p>
+      <a href="#book" class="btn btn-light">Book Appointment <span class="arr">↗</span></a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer id="contact">
+    <div class="foot-grid">
+      <div class="foot-brand r">
+        <span class="brand serif">CarePlus<span class="dot"></span></span>
+        <p>Where advanced medicine meets compassionate care.</p>
+        <div class="foot-soc"><a href="#">Instagram</a><a href="#">LinkedIn</a><a href="#">X</a></div>
+      </div>
+      <div class="foot-links r d1">
+        <a href="#services">Services</a>
+        <a href="#about">About</a>
+        <a href="#doctors">Doctors</a>
+        <a href="#resources">Resources</a>
+        <a href="#book">Book</a>
+      </div>
+      <div class="foot-contact r d2">
+        123 Health Way, Wellness City<br>
+        <a href="tel:5551234567">(555) 123-4567</a>
+      </div>
+    </div>
+    <div class="foot-bar">
+      <span>© 2026 CarePlus. All rights reserved.</span>
+      <div class="links"><a href="#">Privacy</a><a href="#">Terms</a></div>
+    </div>
+  </footer>
+
+<script>
+  // ====== Split text into characters ======
+  document.querySelectorAll('.split').forEach(el=>{
+    const text = el.dataset.text || el.textContent;
+    el.textContent = '';
+    [...text].forEach((c,i)=>{
+      const span = document.createElement('span');
+      span.className = 'ch';
+      span.style.setProperty('--i', i);
+      span.textContent = c === ' ' ? '\u00A0' : c;
+      el.appendChild(span);
+    });
+  });
+
+  // ====== Hero entrance ======
+  const hero = document.getElementById('hero');
+  requestAnimationFrame(()=>{
+    setTimeout(()=>{
+      hero.classList.add('play');
+      hero.querySelectorAll('.r').forEach(el=>el.classList.add('in'));
+    }, 80);
+  });
+
+  // ====== Scroll-triggered reveals ======
+  const io = new IntersectionObserver((entries)=>{
+    for(const e of entries){
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    }
+  },{rootMargin:'0px 0px -8% 0px',threshold:0.05});
+  document.querySelectorAll('.r').forEach(el=>{
+    if(!hero.contains(el)) io.observe(el);
+  });
+
+  // ====== About image reveal ======
+  const aboutImg = document.getElementById('aboutImg');
+  const aboutIo = new IntersectionObserver((entries)=>{
+    for(const e of entries){
+      if(e.isIntersecting){ e.target.classList.add('in'); aboutIo.unobserve(e.target); }
+    }
+  },{threshold:.2});
+  aboutIo.observe(aboutImg);
+
+  // ====== Counters ======
+  function animateCount(el){
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    // Start from a positive baseline near the target so the roll
+    // never reads as starting from 0 (or, with negative deltas, below it).
+    const from = Math.max(0, Math.floor(target * 0.85));
+    const dur = 1600;
+    const start = performance.now();
+    el.textContent = from + suffix;
+    function step(now){
+      const t = Math.min(1, (now-start)/dur);
+      const eased = 1 - Math.pow(1-t, 3);
+      const v = from + (target - from) * eased;
+      el.textContent = Math.max(0, Math.round(v)) + suffix;
+      if(t<1) requestAnimationFrame(step);
+      else el.textContent = target + suffix;
+    }
+    requestAnimationFrame(step);
+  }
+  const countIo = new IntersectionObserver((entries)=>{
+    for(const e of entries){
+      if(e.isIntersecting){
+        e.target.querySelectorAll('[data-count]').forEach(animateCount);
+        countIo.unobserve(e.target);
+      }
+    }
+  },{threshold:.4});
+  document.querySelectorAll('.stats').forEach(el=>countIo.observe(el));
+
+  // ====== Nav scroll state ======
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll',()=>{
+    nav.classList.toggle('scrolled', window.scrollY > 24);
+  },{passive:true});
+
+  // ====== Hero parallax — bg + shadow on different rates ======
+  const heroBg = document.getElementById('heroBg');
+  const heroShadows = document.getElementById('heroShadows');
+  const heroEl = document.getElementById('hero');
+  let bgScale = 1.04;
+  function heroParallax(){
+    const rect = heroEl.getBoundingClientRect();
+    const progress = Math.max(0, Math.min(1, -rect.top / (rect.height || 1)));
+    // bg drifts up slowly
+    heroBg.style.translate = `0 ${progress * -40}px`;
+    // shadows drift faster + opposite slight
+    heroShadows.style.translate = `${progress * 30}px ${progress * 24}px`;
+  }
+  window.addEventListener('scroll', heroParallax, {passive:true});
+  heroParallax();
+
+  // ====== Service card cursor spotlight + tilt ======
+  document.querySelectorAll('.svc').forEach(card=>{
+    card.addEventListener('mousemove', (e)=>{
+      const r = card.getBoundingClientRect();
+      const x = ((e.clientX - r.left) / r.width) * 100;
+      const y = ((e.clientY - r.top) / r.height) * 100;
+      card.style.setProperty('--mx', x + '%');
+      card.style.setProperty('--my', y + '%');
+    });
+  });
+
+  // ====== Magnetic CTA button ======
+  const cta = document.getElementById('ctaMagnet');
+  if(cta){
+    cta.addEventListener('mousemove', (e)=>{
+      const r = cta.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width/2;
+      const y = e.clientY - r.top - r.height/2;
+      cta.style.transform = `translate(${x*0.18}px, ${y*0.22}px)`;
+      cta.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+      cta.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+    cta.addEventListener('mouseleave', ()=>{
+      cta.style.transform = '';
+    });
+  }
+</script>
+</body>
+</html>
